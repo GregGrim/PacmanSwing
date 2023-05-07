@@ -6,11 +6,16 @@ import static java.lang.Thread.sleep;
 
 public class Monster extends Character {
     private String name;
-
+    private boolean vulnerable;
+    private boolean alive;
+    private int score;
 
     public Monster(String name,GameBoard gameBoard) {
-        super(new Point(7,7), getRandomDirection(), gameBoard,400);
+        super(new Point(gameBoard.getRowNum()/2,gameBoard.getRowNum()/2), getRandomDirection(), gameBoard,400);
         this.name=name;
+        this.score=250;
+        this.vulnerable=false;
+        this.alive=true;
     }
     private static Direction getRandomDirection() {
         switch ((int) (Math.random() * 4)) {
@@ -67,5 +72,29 @@ public class Monster extends Character {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isVulnerable() {
+        return vulnerable;
+    }
+
+    public void setVulnerable(boolean vulnerable) {
+        this.vulnerable = vulnerable;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void deathProcess() {
+        setAlive(false);
     }
 }

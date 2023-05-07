@@ -14,6 +14,12 @@ public class HighScoresWindow extends JDialog {
         setLayout(new FlowLayout());
         backButton.addActionListener(backButListener);
         add(backButton);
+        JList<String> scores = new JList<>();
+        add(scores);
+        JScrollPane listScroller = new JScrollPane(scores);
+        listScroller.setPreferredSize(new Dimension(250, 80));
+        listScroller.setAlignmentX(LEFT_ALIGNMENT);
+        add(listScroller);
         setVisible(true);
         //TODO scores
     }

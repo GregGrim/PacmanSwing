@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.*;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -8,10 +9,12 @@ public class Pacman extends Character{
 
     private int mouthOpened = 0;
     private int score;
+    private int lives;
     private boolean mouthDirection = true;
     public Pacman (GameBoard gameBoard) {
         super(new Point(1,1), Direction.RIGHT, gameBoard,300);
         this.score=0;
+        this.lives=1;
         new Thread(()->{
             while (isRunning) {
                 try {
@@ -28,7 +31,7 @@ public class Pacman extends Character{
     }
 
     @Override
-    public void move() {
+    public synchronized void move() {
         super.move();
         Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
         if(food!=null) {
@@ -36,12 +39,42 @@ public class Pacman extends Character{
             gameBoard.getAllItems().remove(food);
             score+=food.score();
         }
+        List<Monster> monsters =  gameBoard.getMonsters();
+        for (Monster monster:
+                monsters) {
+            if(monster.getPoint().equals(point)) {
+                if(monster.isVulnerable()&&monster.isAlive()) {
+                    monster.deathProcess();
+                    score+=monster.getScore();
+                } else if(monster.isAlive()&&!monster.isVulnerable()){
+                    deathProcess();
+                    return;
+                }
+            }
+        }
     }
-
     public int getMouthOpened() {
         return mouthOpened;
     }
     public int getScore() {
         return score;
+    }
+    public int getLives() {
+        return lives;
+    }
+    public void deathProcess() {
+        lives--;
+        System.out.println(lives);
+        //TODO death animation!
+        point.x=1;
+        point.y=1;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }

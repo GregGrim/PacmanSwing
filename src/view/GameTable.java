@@ -17,8 +17,11 @@ public class GameTable extends JTable {
             while(isRunning) {
                 repaint();
                 if(gameBoard.boardOver()) {
-                    sleep(2000);
+                    sleep(1500);
                     gameWindow.restartGame();
+                }
+                if(gameBoard.gameOver()) {
+                    gameWindow.showGameOver();
                 }
                 sleep(20);
             }

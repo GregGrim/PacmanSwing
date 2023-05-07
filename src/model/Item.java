@@ -3,7 +3,7 @@ package model;
 import java.awt.*;
 
 public abstract class Item {
-    protected Point point;
+    volatile protected Point point;
     protected GameBoard gameBoard;
     public Item(Point p, GameBoard gameBoard) {
         this.gameBoard=gameBoard;

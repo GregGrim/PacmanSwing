@@ -22,7 +22,7 @@ public abstract class Character extends Item{
     protected Direction direction;
     private Runnable runner = () -> {
         try {
-            while(! Thread.interrupted()) {
+            while(isRunning) {
                 move();
                 sleep(timeToMove);
             }

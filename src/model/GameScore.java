@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class GameScore implements Serializable {
     private int score;
     private String playerName;
-    public GameScore(String playerName) {
+    public GameScore(String playerName,int score) {
         this.playerName=playerName;
-        this.score=0;
+        this.score=score;
     }
 
     public void setScore(int score) {

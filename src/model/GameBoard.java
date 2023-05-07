@@ -112,4 +112,7 @@ public class GameBoard {
     public boolean boardOver() {
         return foodMap.isEmpty();
     }
+    public boolean gameOver() {
+        return pacman.getLives()<=0;
+    }
 }
