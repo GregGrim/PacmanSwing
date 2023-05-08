@@ -61,14 +61,14 @@ public abstract class Character extends Item{
                 if(gameBoard.getBlocks().get(new Point(point.x-1, point.y)) == null) {
                     if(point.x>0) {
                         point.x-=1;
-                    } else point.x=gameBoard.getRowNum()-1;
+                    } else point.x=gameBoard.getColNum()-1;
                 }
             }
                 break;
             case RIGHT : {
 
                 if(gameBoard.getBlocks().get(new Point(point.x+1, point.y)) == null) {
-                    if(point.x<gameBoard.getRowNum()-1) {
+                    if(point.x<gameBoard.getColNum()-1) {
                         point.x+=1;
                     } else point.x=0;
                 }

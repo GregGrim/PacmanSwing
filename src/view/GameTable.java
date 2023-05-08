@@ -9,7 +9,8 @@ import java.awt.*;
 import static java.lang.Thread.sleep;
 
 public class GameTable extends JTable {
-    GameBoard gameBoard;
+    private GameBoard gameBoard;
+    private GameTableModel gameTableModel;
     private boolean isRunning = true;
     private GameWindow gameWindow;
     private Runnable painter = () -> {
@@ -32,18 +33,17 @@ public class GameTable extends JTable {
 
 
     public GameTable (GameBoard gameBoard) {
-        super(new GameTableModel(gameBoard));
+        super();
+        gameTableModel=new GameTableModel(gameBoard);
+        setModel(gameTableModel);
         this.gameBoard = gameBoard;
-        int cellSize=800/ gameBoard.getRowNum();
+        setCellSize(cellSize());
         setBackground(Color.BLACK);
         setCellSelectionEnabled(false);
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0,0));
         setDefaultRenderer(VCharacter.class, (table, value, isSelected, hasFocus, row, column) -> (Component) value);
-        setRowHeight(cellSize);
-        for (int i = 0; i < getColumnCount(); i++){
-            getColumnModel().getColumn(i).setPreferredWidth(cellSize);
-        }
+
         addKeyListener(new KeyController(gameBoard));
     }
     public Runnable getPainter(GameWindow gameWindow) {
@@ -52,6 +52,16 @@ public class GameTable extends JTable {
     }
     public void stop () {
         isRunning=false;
+    }
+    public int cellSize() {
+        return gameTableModel.getCellSize();
+    }
+    public void setCellSize(int newCellSize) {
+        gameTableModel.setCellSize(newCellSize);
+        setRowHeight(newCellSize);
+        for (int i = 0; i < gameBoard.getColNum(); i++){
+            getColumnModel().getColumn(i).setPreferredWidth(newCellSize);
+        }
     }
 
 }

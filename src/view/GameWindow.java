@@ -7,6 +7,8 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,24 +18,51 @@ public class GameWindow extends JDialog{
     private JFrame parentFrame;
     private GameBoard gameBoard;
     private GameTable gameTable;
+    private JPanel infoPanel;
+    private JLabel scoreLabel;
+    private JLabel livesLabel;
+    private JLabel timeLabel;
     private Dimension dimension;
 
     private int rowNum;
-    private ActionListener okButListener = e -> dispose();
+    private int colNum;
+    private ComponentListener componentListener = new ComponentListener() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            int newHeight = gameTable.getHeight();
+            int newWidth = gameTable.getWidth();
+            int xBound = getWidth()-newWidth;
+            int yBound = getHeight()-newHeight;
+            int newCellSize=Math.min(newHeight/rowNum,newWidth/colNum);
+            newHeight=newCellSize*rowNum;
+            newWidth=newCellSize*colNum;
+            gameTable.setCellSize(newCellSize);
+            Rectangle r = getBounds();
+            setBounds(r.x, r.y, newWidth+xBound, newHeight+yBound);
+        }
+        @Override
+        public void componentMoved(ComponentEvent e) {}
+        @Override
+        public void componentShown(ComponentEvent e) {}
+        @Override
+        public void componentHidden(ComponentEvent e) {}
+    };
+    private ActionListener okButListener = actionEvent -> dispose();
 
     private static ExecutorService exec = Executors.newCachedThreadPool();
 
-    public GameWindow(JFrame parentFrame,int rowNum) {
+    public GameWindow(JFrame parentFrame,int rowNum,int colNum) {
         super(parentFrame, "Game", true);
         this.parentFrame=parentFrame;
+        addComponentListener(componentListener);
         setBackground(Color.BLACK);
         this.rowNum=rowNum;
+        this.colNum=colNum;
         setLocation(0, 0);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        dimension = new Dimension(800/rowNum * rowNum,800/rowNum * rowNum+40);
-        setPreferredSize(dimension);
-        setResizable(false);
         createGame();
+        dimension = new Dimension(gameTable.cellSize() * colNum,gameTable.cellSize() * rowNum+40);
+        setPreferredSize(dimension);
         setVisible(true);
     }
 
@@ -44,8 +73,18 @@ public class GameWindow extends JDialog{
         super.dispose();
     }
     public void createGame() {
-        gameBoard = new GameBoard(rowNum);
+        gameBoard = new GameBoard(rowNum,colNum);
         gameTable =new GameTable(gameBoard);
+        infoPanel = new JPanel();
+        infoPanel.setPreferredSize(new Dimension(getWidth(),20));
+        infoPanel.add(new JLabel("Score: "));
+        infoPanel.add(scoreLabel=new JLabel());
+        infoPanel.add(new JLabel("Lives: "));
+        infoPanel.add(livesLabel=new JLabel());
+        infoPanel.add(new JLabel("Time: "));
+        infoPanel.add(timeLabel=new JLabel());
+        infoPanel.setVisible(true);
+        add(infoPanel);
         add(gameTable);
         pack();
         exec.execute(gameTable.getPainter(this));
@@ -54,14 +93,15 @@ public class GameWindow extends JDialog{
         gameTable.stop();
         gameBoard.stop();
         remove(gameTable);
+        remove(infoPanel);
         createGame();
     }
     public void showGameOver() {
         gameTable.stop();
         gameBoard.stop();
         remove(gameTable);
+        remove(infoPanel);
         repaint();
-        Border border = BorderFactory.createLineBorder(Color.YELLOW, 3);
         JPanel panel = new JPanel();
         JLabel label = new JLabel("<html>Game Over<br>Your Score: "+gameBoard.getPacman().getScore()
                 +"<br>Enter your name and press \"OK\" to continue</html>");

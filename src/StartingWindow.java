@@ -8,20 +8,23 @@ public class StartingWindow extends JFrame {
     private JButton gameButton = new JButton("Start Game");
     private JButton scoresButton = new JButton("High Scores");
     private JButton exitButton = new JButton("Exit");
-    private JTextField txt = new JTextField(10);
+    private JTextField rows = new JTextField(10);
+    private JTextField columns = new JTextField(10);
     private int rowNum;
+    private int colNum;
     private GridBagConstraints gbc = new GridBagConstraints();
     private GridBagLayout layout = new GridBagLayout();
 
     private ActionListener gameButListener = e -> {
         try {
-            rowNum = Integer.parseInt(txt.getText())/2 *2 +1;
-            if(rowNum<10||rowNum>100) throw new NumberFormatException();
-            SwingUtilities.invokeLater(()-> new GameWindow(this, rowNum));
+            rowNum = Integer.parseInt(rows.getText())/2 *2 +1;
+            colNum = Integer.parseInt(columns.getText())/2 *2 +1;
+            if(rowNum<10||rowNum>101) throw new NumberFormatException();
+            if(colNum<10||colNum>101) throw new NumberFormatException();
+            SwingUtilities.invokeLater(()-> new GameWindow(this, rowNum, colNum));
         }catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Please enter a number in range(10,100)!!!",
                     "Error", JOptionPane.ERROR_MESSAGE);
-            txt.setText("");
         }
     };
     private ActionListener scoresButListener = e ->
@@ -45,14 +48,30 @@ public class StartingWindow extends JFrame {
         gbc.gridx = 2;
         gbc.gridy = 1;
         add(gameButton,gbc);
+
         gbc.gridx = 2;
         gbc.gridy = 2;
-        add(txt,gbc);
+        add(rows,gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(new JLabel("Rows:"),gbc);
+
+
         gbc.gridx = 2;
         gbc.gridy = 3;
-        add(scoresButton,gbc);
+        add(columns,gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        add(new JLabel("Columns:"),gbc);
+
         gbc.gridx = 2;
         gbc.gridy = 4;
+        add(scoresButton,gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 5;
         add(exitButton,gbc);
         setVisible(true);
     }

@@ -19,6 +19,7 @@ public class HighScoresWindow extends JDialog {
         JScrollPane listScroller = new JScrollPane(scores);
         listScroller.setPreferredSize(new Dimension(250, 80));
         listScroller.setAlignmentX(LEFT_ALIGNMENT);
+        listScroller.setVisible(true);
         add(listScroller);
         setVisible(true);
         //TODO scores

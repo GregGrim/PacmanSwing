@@ -12,11 +12,6 @@ public class MazeGenerator {
     private Cell[][] cells; // 2d array of Cells
     private Random random = new Random(); // The random object
 
-    // initialize with x and y the same
-    public MazeGenerator(int aDimension) {
-        // Initialize
-        this(aDimension, aDimension);
-    }
     // constructor
     public MazeGenerator(int xDimension, int yDimension) {
         dimensionX = xDimension;
@@ -296,7 +291,7 @@ public class MazeGenerator {
     }
 
 //    // run it
-    public static void main(String[] args) {
-        MazeGenerator maze = new MazeGenerator(10);
-   }
+//    public static void main(String[] args) {
+//        MazeGenerator maze = new MazeGenerator(10);
+//   }
 }

@@ -10,8 +10,10 @@ public class GameBoard {
     private List<Item> allItems = new ArrayList<>();
     private Map<Point,Food> foodMap = new HashMap<>();
     private int rowNum;
-    public GameBoard (int rowNum) {
+    private int colNum;
+    public GameBoard (int rowNum, int colNum) {
         this.rowNum=rowNum;
+        this.colNum=colNum;
         pacman = new Pacman(this);
         new Thread(pacman.getRunner()).start();
         monsters.add(new Monster("PINK",this));
@@ -20,13 +22,13 @@ public class GameBoard {
         monsters.add(new Monster("RED",this));
         addWallsToModel();
         checkandremoveDeadEnds();
-        blocks.remove(new Point(0,3));
-        blocks.remove(new Point(rowNum-1,3));
+        blocks.remove(new Point(0,3)); // adding tunnels
+        blocks.remove(new Point(colNum-1,3));
         blocks.remove(new Point(0,rowNum-4));
-        blocks.remove(new Point(rowNum-1,rowNum-4));
+        blocks.remove(new Point(colNum-1,rowNum-4));
         allItems.add(pacman);
         allItems.addAll(monsters);
-        for (int i = 0; i < rowNum; i++) {
+        for (int i = 0; i < colNum; i++) {
             for (int j = 0; j < rowNum; j++) {
                 Point point = new Point(i,j) ;
                 if(blocks.get(point)==null) {
@@ -48,6 +50,9 @@ public class GameBoard {
     public int getRowNum() {
         return rowNum;
     }
+    public int getColNum() {
+        return colNum;
+    }
     public void stop() {
         pacman.stop();
         monsters.forEach(Character::stop);
@@ -64,8 +69,8 @@ public class GameBoard {
         return foodMap;
     }
     public void addWallsToModel() {
-        MazeGenerator mazeGenerator = new MazeGenerator((rowNum)/2);
-        for (int i = 0; i < rowNum; i++) { // adding all walls to the model
+        MazeGenerator mazeGenerator = new MazeGenerator((colNum)/2, (rowNum)/2);
+        for (int i = 0; i < colNum; i++) { // adding all walls to the model
             for (int j = 0; j < rowNum; j++) {
                 if(mazeGenerator.getGrid()[i*2][j]=='X') {
                     Block block = new Block(new Point(i, j), this);
@@ -75,7 +80,7 @@ public class GameBoard {
         }
     }
     public void checkandremoveDeadEnds() {
-        for (int i = 0; i < rowNum; i++) {
+        for (int i = 0; i < colNum; i++) {
             for (int j = 0; j < rowNum; j++) {
                 Point point = new Point(i,j);
                 if (blocks.get(new Point(point.x - 1, point.y)) != null //remove deadend in south dir
@@ -102,13 +107,16 @@ public class GameBoard {
                 if (blocks.get(new Point(point.x + 1, point.y)) != null //remove deadend in east dir
                         && blocks.get(new Point(point.x, point.y - 1)) != null
                         && blocks.get(new Point(point.x, point.y + 1)) != null
-                        && point.x + 1 != rowNum - 1) {
+                        && point.x + 1 != colNum - 1) {
                     blocks.remove(new Point(point.x + 1, point.y));
                     //            if(point.x+1==rowNum) blocks.remove(new Point(0,point.y));
                 }
             }
         }
     }
+
+
+
     public boolean boardOver() {
         return foodMap.isEmpty();
     }

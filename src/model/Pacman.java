@@ -1,6 +1,9 @@
 package model;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -31,7 +34,7 @@ public class Pacman extends Character{
     }
 
     @Override
-    public synchronized void move() {
+    public void move() {
         super.move();
         Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
         if(food!=null) {
@@ -39,7 +42,8 @@ public class Pacman extends Character{
             gameBoard.getAllItems().remove(food);
             score+=food.score();
         }
-        List<Monster> monsters =  gameBoard.getMonsters();
+        List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
+//        Collections.copy(monsters,gameBoard.getMonsters());
         for (Monster monster:
                 monsters) {
             if(monster.getPoint().equals(point)) {

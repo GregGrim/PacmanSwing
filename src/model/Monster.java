@@ -9,6 +9,7 @@ public class Monster extends Character {
     private boolean vulnerable;
     private boolean alive;
     private int score;
+    private int looping;
 
     public Monster(String name,GameBoard gameBoard) {
         super(new Point(gameBoard.getRowNum()/2,gameBoard.getRowNum()/2), getRandomDirection(), gameBoard,400);
@@ -16,6 +17,7 @@ public class Monster extends Character {
         this.score=250;
         this.vulnerable=false;
         this.alive=true;
+        this.looping=0;
     }
     private static Direction getRandomDirection() {
         switch ((int) (Math.random() * 4)) {
@@ -40,32 +42,37 @@ public class Monster extends Character {
         int x = point.x;
         int y = point.y;
         super.move();
-        if(point.y==y&&point.x==x) {
-            int distX=gameBoard.getPacman().point.x-x;
-            int distY=gameBoard.getPacman().point.y-y;
-            if(distX>0) {
-                if(distY>0) {
-                    if(distX>distY) {
-                        direction=Direction.RIGHT;
-                    } else direction=Direction.DOWN;
-                } else {
-                    if(distX>-distY) {
-                    direction=Direction.RIGHT;
-                    } else direction=Direction.UP;
-                }
+
+        int distX = gameBoard.getPacman().point.x - x;
+        int distY = gameBoard.getPacman().point.y - y;
+        if (distX > 0) {
+            if (distY > 0) {
+                if (distX > distY) {
+                    direction = Direction.RIGHT;
+                } else direction = Direction.DOWN;
             } else {
-                if(distY>0) {
-                    if(-distX>distY) {
-                        direction=Direction.LEFT;
-                    } else direction=Direction.DOWN;
-                } else {
-                    if(-distX>-distY) {
-                        direction=Direction.LEFT;
-                    } else direction=Direction.UP;
-                }
-
+                if (distX > -distY) {
+                    direction = Direction.RIGHT;
+                } else direction = Direction.UP;
             }
-
+        } else {
+            if (distY > 0) {
+                if (-distX > distY) {
+                    direction = Direction.LEFT;
+                } else direction = Direction.DOWN;
+            } else {
+                if (-distX > -distY) {
+                    direction = Direction.LEFT;
+                } else direction = Direction.UP;
+            }
+        }
+        if(point.y==y&&point.x==x) { // checks if monsters stays in wall direction
+            if(looping++>3) {
+                looping=0;
+                direction=getRandomDirection();
+            }
+        } else {
+            looping=0;
         }
 
     }

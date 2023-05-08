@@ -13,10 +13,9 @@ import java.util.List;
 public class GameTableModel extends AbstractTableModel{
     private int cellSize;
     private GameBoard gameBoard;
-    private List<VItem> vItems = new ArrayList<>();
     public GameTableModel(GameBoard gameBoard) {
         this.gameBoard=gameBoard;
-        this.cellSize=800/ gameBoard.getRowNum();
+        this.cellSize=400/ Math.max(gameBoard.getRowNum(),gameBoard.getColNum());
     }
     @Override
     public int getRowCount() {
@@ -24,12 +23,13 @@ public class GameTableModel extends AbstractTableModel{
     }
     @Override
     public int getColumnCount() {
-        return gameBoard.getRowNum();
+        return gameBoard.getColNum();
     }
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        for (Item model: gameBoard.getAllItems()) {
-            if(model.getPoint().equals(new Point(columnIndex,rowIndex))) return VItem.newItem(model, cellSize);
+        List<Item> items = new ArrayList<>(gameBoard.getAllItems());
+        for (Item item : items) {
+            if(item.getPoint().equals(new Point(columnIndex,rowIndex))) return VItem.newItem(item, cellSize);
         }
         return null;
     }
@@ -37,5 +37,11 @@ public class GameTableModel extends AbstractTableModel{
     public Class<?> getColumnClass(int columnIndex) {
         return Icon.class;
     }
+    public int getCellSize() {
+        return cellSize;
+    }
 
+    public void setCellSize(int cellSize) {
+        this.cellSize = cellSize;
+    }
 }
