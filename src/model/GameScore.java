@@ -1,13 +1,15 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class GameScore implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     private int score;
     private String playerName;
-    public GameScore(String playerName,int score) {
-        this.playerName=playerName;
-        this.score=score;
+    public GameScore() {
     }
 
     public void setScore(int score) {
@@ -16,5 +18,16 @@ public class GameScore implements Serializable {
 
     public int getScore() {
         return score;
+    }
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    @Override
+    public String toString() {
+        return playerName+" :    "+score;
     }
 }

@@ -1,18 +1,18 @@
 package view;
 
 import model.GameBoard;
+import model.GameScore;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static java.lang.Thread.sleep;
 
 public class GameWindow extends JDialog{
     private JFrame parentFrame;
@@ -22,6 +22,7 @@ public class GameWindow extends JDialog{
     private JLabel scoreLabel;
     private JLabel livesLabel;
     private JLabel timeLabel;
+    private JTextField textField;
     private Dimension dimension;
 
     private int rowNum;
@@ -47,7 +48,21 @@ public class GameWindow extends JDialog{
         @Override
         public void componentHidden(ComponentEvent e) {}
     };
-    private ActionListener okButListener = actionEvent -> dispose();
+    private ActionListener okButListener = actionEvent -> {
+        GameScore gameScore = new GameScore();
+        gameScore.setPlayerName(textField.getText());
+        gameScore.setScore(gameBoard.getPacman().getScore());
+        try {
+            FileOutputStream fout = new FileOutputStream("gameScores.txt",true);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(gameScore);
+            fout.close();
+            oos.close();
+            dispose();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    };
 
     private static ExecutorService exec = Executors.newCachedThreadPool();
 
@@ -107,7 +122,7 @@ public class GameWindow extends JDialog{
                 +"<br>Enter your name and press \"OK\" to continue</html>");
         label.setFont(new Font(Font.SERIF, Font.PLAIN,  30));
         panel.add(label);
-        JTextField textField = new JTextField(30);
+        textField = new JTextField(30);
         textField.setFont(Font.getFont(Font.SERIF));
         panel.add(textField);
         JButton button = new JButton("OK");

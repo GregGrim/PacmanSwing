@@ -1,8 +1,5 @@
 package view;
 
-
-
-import model.Character;
 import model.Item;
 import model.Monster;
 
@@ -55,7 +52,6 @@ public class VMonster extends VCharacter {
     public int getIconWidth() {
         return r;
     }
-
     @Override
     public int getIconHeight() {
         return r;
