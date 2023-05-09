@@ -10,6 +10,7 @@ public class Monster extends Character {
     private boolean alive;
     private int score;
     private int looping;
+    private int legsPosition = 0;
 
     public Monster(String name,GameBoard gameBoard) {
         super(new Point(gameBoard.getRowNum()/2,gameBoard.getRowNum()/2), getRandomDirection(), gameBoard,400);
@@ -18,6 +19,17 @@ public class Monster extends Character {
         this.vulnerable=false;
         this.alive=true;
         this.looping=0;
+        new Thread(()->{
+            while (isRunning) {
+                try {
+                    sleep(150);
+                    if(legsPosition==0) legsPosition++;
+                    else legsPosition--;
+                } catch (InterruptedException e) {
+                    isRunning = false;
+                }
+            }
+        }).start();
     }
     private static Direction getRandomDirection() {
         switch ((int) (Math.random() * 4)) {
@@ -103,5 +115,9 @@ public class Monster extends Character {
 
     public void deathProcess() {
         setAlive(false);
+    }
+
+    public int getLegsPosition() {
+        return legsPosition;
     }
 }
