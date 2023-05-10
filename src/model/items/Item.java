@@ -1,9 +1,11 @@
-package model;
+package model.items;
+
+import model.GameBoard;
 
 import java.awt.*;
 
 public abstract class Item {
-    volatile protected Point point;
+    protected Point point;
     protected GameBoard gameBoard;
     public Item(Point p, GameBoard gameBoard) {
         this.gameBoard=gameBoard;

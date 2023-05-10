@@ -1,19 +1,19 @@
-package view;
+package view.items;
 
-import model.Item;
+import model.items.Item;
 
 import java.awt.*;
 
-public class VSimpleFood extends VItem{
+public class VSuperFood extends VItem {
 
-    public VSimpleFood(Item model, int r) {
+    public VSuperFood(Item model, int r) {
         super(model, r);
     }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        g.setColor(Color.WHITE);
-        g.fillOval(x,y,r/5,r/5);
+        g.setColor(Color.GREEN);
+        g.fillOval(x,y,r/3,r/3);
     }
 
     @Override

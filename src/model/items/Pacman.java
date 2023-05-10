@@ -1,21 +1,24 @@
-package model;
+package model.items;
+
+import model.GameBoard;
+import model.items.Character;
+import model.items.Food;
+import model.items.Monster;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
 
-public class Pacman extends Character{
+public class Pacman extends Character {
 
     private int mouthOpened = 0;
     private int score;
     private int lives;
     private boolean mouthDirection = true;
     public Pacman (GameBoard gameBoard) {
-        super(new Point(1,1), Direction.RIGHT, gameBoard,300);
+        super(new Point(1,1), Direction.RIGHT, gameBoard,100);
         this.score=0;
         this.lives=1;
         new Thread(()->{

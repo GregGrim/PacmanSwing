@@ -1,4 +1,7 @@
-package model;
+package model.items;
+
+import model.GameBoard;
+import model.items.Character;
 
 import java.awt.*;
 
@@ -12,8 +15,8 @@ public class Monster extends Character {
     private int looping;
     private int legsPosition = 0;
 
-    public Monster(String name,GameBoard gameBoard) {
-        super(new Point(gameBoard.getRowNum()/2,gameBoard.getRowNum()/2), getRandomDirection(), gameBoard,400);
+    public Monster(String name, GameBoard gameBoard) {
+        super(new Point(gameBoard.getColNum()-2,gameBoard.getRowNum()-2), getRandomDirection(), gameBoard,150);
         this.name=name;
         this.score=250;
         this.vulnerable=false;

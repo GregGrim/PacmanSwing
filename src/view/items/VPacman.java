@@ -1,9 +1,9 @@
-package view;
+package view.items;
 
 
-import model.Character;
-import model.Item;
-import model.Pacman;
+import model.items.Character;
+import model.items.Item;
+import model.items.Pacman;
 
 import java.awt.*;
 

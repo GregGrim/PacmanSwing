@@ -1,14 +1,17 @@
 package model;
+import model.items.*;
+import model.items.Character;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class GameBoard {
     private List<Monster> monsters = new ArrayList<>();
-    private Map<Point,Block> blocks = new HashMap();
+    private Map<Point, Block> blocks = new HashMap();
     private Pacman pacman;
     private List<Item> allItems = new ArrayList<>();
-    private Map<Point,Food> foodMap = new HashMap<>();
+    private Map<Point, Food> foodMap = new HashMap<>();
     private int rowNum;
     private int colNum;
     public GameBoard (int rowNum, int colNum) {
@@ -74,7 +77,7 @@ public class GameBoard {
             for (int j = 0; j < rowNum; j++) {
                 if(mazeGenerator.getGrid()[i*2][j]=='X') {
                     Block block = new Block(new Point(i, j), this);
-                    blocks.put(block.point, block);
+                    blocks.put(block.getPoint(), block);
                 }
             }
         }
@@ -109,14 +112,5 @@ public class GameBoard {
                 }
             }
         }
-    }
-
-
-
-    public boolean boardOver() {
-        return foodMap.isEmpty();
-    }
-    public boolean gameOver() {
-        return pacman.getLives()<=0;
     }
 }

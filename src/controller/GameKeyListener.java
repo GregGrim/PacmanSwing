@@ -5,13 +5,13 @@ import model.GameBoard;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static model.Character.Direction.*;
-import static model.Character.Direction.RIGHT;
+import static model.items.Character.Direction.*;
+import static model.items.Character.Direction.RIGHT;
 
-public class KeyController implements KeyListener {
+public class GameKeyListener implements KeyListener {
     private GameBoard gameBoard;
 
-    public KeyController(GameBoard gameBoard) {
+    public GameKeyListener(GameBoard gameBoard) {
         this.gameBoard=gameBoard;
     }
     @Override

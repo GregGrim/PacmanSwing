@@ -1,7 +1,7 @@
-package view;
+package view.items;
 
-import model.Item;
-import model.Monster;
+import model.items.Item;
+import model.items.Monster;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -11,9 +11,8 @@ public class VMonster extends VCharacter {
     public VMonster (Item m, int r) {
         super(m,r);
     }
-
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // monster body
         g2d.setColor(getColor(((Monster)model).getName()));
@@ -45,7 +44,7 @@ public class VMonster extends VCharacter {
             case RIGHT -> xPupilLocation += pupilSize / 2;
         }
         g2d.fillOval(xPupilLocation, yPupilLocation, pupilSize, pupilSize);
-        g2d.fillOval(xPupilLocation+r / 3, yPupilLocation, pupilSize, pupilSize);
+        g2d.fillOval(xPupilLocation + r / 3, yPupilLocation, pupilSize, pupilSize);
         g2d.dispose();
     }
     @Override

@@ -1,4 +1,4 @@
-import model.GameScore;
+import controller.GameScore;
 
 import javax.swing.*;
 import java.awt.*;

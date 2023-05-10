@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,10 +22,6 @@ public class GameScore implements Serializable {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-    public String getPlayerName() {
-        return playerName;
-    }
-
     @Override
     public String toString() {
         return playerName+" :    "+score;

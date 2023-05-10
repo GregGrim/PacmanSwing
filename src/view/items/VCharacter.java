@@ -1,9 +1,6 @@
-package view;
+package view.items;
 
-import model.Character;
-import model.Item;
-
-import javax.swing.*;
+import model.items.Item;
 
 
 public abstract class VCharacter extends VItem {

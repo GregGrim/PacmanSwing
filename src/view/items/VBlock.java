@@ -1,7 +1,6 @@
-package view;
+package view.items;
 
-import model.Character;
-import model.Item;
+import model.items.Item;
 
 import java.awt.*;
 

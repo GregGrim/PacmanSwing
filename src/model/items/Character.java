@@ -1,11 +1,13 @@
-package model;
+package model.items;
+
+import model.GameBoard;
+import model.items.Item;
 
 import java.awt.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.sleep;
 
-public abstract class Character extends Item{
+public abstract class Character extends Item {
     protected boolean isRunning;
     private int timeToMove;
 
@@ -30,7 +32,7 @@ public abstract class Character extends Item{
             e.printStackTrace();
         }
     };
-    public Character (Point p, Direction d,GameBoard gameBoard,int timeToMove) {
+    public Character (Point p, Direction d, GameBoard gameBoard, int timeToMove) {
         super(p, gameBoard);
         this.timeToMove=timeToMove;
         isRunning=true;
@@ -75,6 +77,7 @@ public abstract class Character extends Item{
             }
             break;
         }
+
     }
     public void setDirection(Direction direction) {
         this.direction = direction;

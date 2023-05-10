@@ -1,7 +1,7 @@
 package view;
 
-import controller.KeyController;
-import model.GameBoard;
+import controller.GameController;
+import view.items.VCharacter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,19 +9,18 @@ import java.awt.*;
 import static java.lang.Thread.sleep;
 
 public class GameTable extends JTable {
-    private GameBoard gameBoard;
-    private GameTableModel gameTableModel;
+    private GameController gameController;
     private boolean isRunning = true;
     private GameWindow gameWindow;
     private Runnable painter = () -> {
         try {
             while(isRunning) {
                 repaint();
-                if(gameBoard.boardOver()) {
+                if(gameController.boardOver()) {
                     sleep(1500);
                     gameWindow.restartGame();
                 }
-                if(gameBoard.gameOver()) {
+                if(gameController.gameOver()) {
                     gameWindow.showGameOver();
                 }
                 sleep(20);
@@ -30,21 +29,16 @@ public class GameTable extends JTable {
             e.printStackTrace();
         }
     };
-
-
-    public GameTable (GameBoard gameBoard) {
+    public GameTable (GameController gameController) {
         super();
-        gameTableModel=new GameTableModel(gameBoard);
-        setModel(gameTableModel);
-        this.gameBoard = gameBoard;
-        setCellSize(cellSize());
+        this.gameController=gameController;
+        setModel(gameController.getGameTableModel());
         setBackground(Color.BLACK);
         setCellSelectionEnabled(false);
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0,0));
         setDefaultRenderer(VCharacter.class, (table, value, isSelected, hasFocus, row, column) -> (Component) value);
-
-        addKeyListener(new KeyController(gameBoard));
+        addKeyListener(gameController.getKeyListener());
     }
     public Runnable getPainter(GameWindow gameWindow) {
         this.gameWindow=gameWindow;
@@ -53,15 +47,12 @@ public class GameTable extends JTable {
     public void stop () {
         isRunning=false;
     }
-    public int cellSize() {
-        return gameTableModel.getCellSize();
-    }
-    public void setCellSize(int newCellSize) {
-        gameTableModel.setCellSize(newCellSize);
+    public void resizeTable(int newCellSize) {
         setRowHeight(newCellSize);
-        for (int i = 0; i < gameBoard.getColNum(); i++){
+        for (int i = 0; i < gameController.getColNum(); i++) {
             getColumnModel().getColumn(i).setPreferredWidth(newCellSize);
+            getColumnModel().getColumn(i).setMaxWidth(newCellSize);
+            getColumnModel().getColumn(i).setMinWidth(newCellSize);
         }
     }
-
 }
