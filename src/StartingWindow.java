@@ -1,3 +1,4 @@
+import controller.CompoundShortcut;
 import view.GameWindow;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class StartingWindow extends JFrame {
             if(colNum<10||colNum>101) throw new NumberFormatException();
             SwingUtilities.invokeLater(()-> new GameWindow(this, rowNum, colNum));
         }catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Please enter a number in range(10,100)!!!",
+            JOptionPane.showMessageDialog(this, "Please enter a number in range(10,100)!",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     };

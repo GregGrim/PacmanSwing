@@ -10,6 +10,8 @@ import java.awt.event.ComponentListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static java.lang.Thread.sleep;
+
 public class GameWindow extends JDialog{
     GameController gameController;
     private GridBagConstraints gbc = new GridBagConstraints();
@@ -19,7 +21,21 @@ public class GameWindow extends JDialog{
     private JLabel livesLabel;
     private JLabel timeLabel;
     private JTextField textField;
-    private Dimension dimension;
+    private Dimension dimension ;
+    private boolean isRunning = true;
+    private Thread panelRepainter = new Thread(()->{
+        while(isRunning) {
+            try {
+                sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            timeLabel.setText("Time: " + gameController.getTime());
+            scoreLabel.setText("Score: " + gameController.getScore());
+            livesLabel.setText("Lives: " + gameController.getLives());
+            infoPanel.repaint();
+        }
+    });
     private ComponentListener componentListener = new ComponentListener() {
         @Override
         public void componentResized(ComponentEvent e) {
@@ -50,25 +66,27 @@ public class GameWindow extends JDialog{
                 "Error", JOptionPane.ERROR_MESSAGE);
     };
 
-    private static ExecutorService exec = Executors.newCachedThreadPool();
+    private ExecutorService exec = Executors.newCachedThreadPool();
 
     public GameWindow(JFrame parentFrame,int rowNum,int colNum) {
         super(parentFrame, "Game", true);
+        setPreferredSize(new Dimension(400,400));
         addComponentListener(componentListener);
         setBackground(Color.BLACK);
         setLocation(0, 0);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         createGameField(rowNum,colNum);
-        dimension = new Dimension(gameController.getCellSize() * colNum,gameController.getCellSize() * rowNum+40);
+        dimension = new Dimension(gameController.getCellSize() * colNum,
+                gameController.getCellSize() * rowNum+40);
         setPreferredSize(dimension);
         setVisible(true);
     }
-
     @Override
     public void dispose() {
+        super.dispose();
         gameTable.stop();
         gameController.stopGame();
-        super.dispose();
+
     }
     public void createGameField(int rowNum,int colNum) {
         gameController = new GameController(rowNum,colNum);
@@ -85,11 +103,16 @@ public class GameWindow extends JDialog{
                 gameController.getScore(),gameController.getCellSize());
     }
     private void stop() {
+        isRunning=false;
+        try{
+            panelRepainter.join();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
         gameTable.stop();
         gameController.stopGame();
         remove(gameTable);
         remove(infoPanel);
-        exec.shutdown();
     }
     public void showGameOver() {
         stop();
@@ -98,13 +121,13 @@ public class GameWindow extends JDialog{
     public void createGameFieldComponents() {
         gameTable =new GameTable(gameController);
         scoreLabel=new JLabel("Score: "+gameController.getScore());
-        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setForeground(Color.YELLOW);
 
-        livesLabel=new JLabel("Lives: ");
-        livesLabel.setForeground(Color.WHITE);
+        livesLabel=new JLabel("Lives: "+gameController.getLives());
+        livesLabel.setForeground(Color.YELLOW);
 
-        timeLabel=new JLabel("Time: ");
-        timeLabel.setForeground(Color.WHITE);
+        timeLabel=new JLabel("Time: "+gameController.getTime());
+        timeLabel.setForeground(Color.YELLOW);
 
         infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(1,3));
@@ -122,11 +145,11 @@ public class GameWindow extends JDialog{
         cellPanel.add(timeLabel);
         cellPanel.setBackground(Color.BLACK);
         infoPanel.add(cellPanel);
-
-        infoPanel.setVisible(true);
         add(infoPanel, BorderLayout.NORTH);
         add(gameTable);
         pack();
+        isRunning=true;
+        exec.execute(panelRepainter);
         exec.execute(gameTable.getPainter(this));
     }
     public void createGameOverWindow() {

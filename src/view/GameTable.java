@@ -1,5 +1,6 @@
 package view;
 
+import controller.CompoundShortcut;
 import controller.GameController;
 import view.items.VCharacter;
 
@@ -12,7 +13,7 @@ public class GameTable extends JTable {
     private GameController gameController;
     private boolean isRunning = true;
     private GameWindow gameWindow;
-    private Runnable painter = () -> {
+    private Thread painter = new Thread(() -> {
         try {
             while(isRunning) {
                 repaint();
@@ -28,7 +29,7 @@ public class GameTable extends JTable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    };
+    });
     public GameTable (GameController gameController) {
         super();
         this.gameController=gameController;
@@ -46,6 +47,11 @@ public class GameTable extends JTable {
     }
     public void stop () {
         isRunning=false;
+        try {
+            painter.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public void resizeTable(int newCellSize) {
         setRowHeight(newCellSize);

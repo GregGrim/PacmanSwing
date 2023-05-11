@@ -3,7 +3,6 @@ package controller;
 import model.GameBoard;
 import model.items.Item;
 import view.items.VItem;
-//import view.viewModel.GameTableModel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -17,16 +16,34 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 public class GameController {
    private GameBoard gameBoard;
-   private int rowNum;
-   private int colNum;
+   private final int rowNum;
+   private final int colNum;
    private int cellSize;
+   private int time;
+   private boolean isRunning=true;
+
+   private Thread timeThread = new Thread(() -> {
+      while(isRunning){
+         try {
+            sleep(1000);
+            time++;
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      }
+   });
+
    public GameController (int rowNum, int colNum) {
       this.rowNum=rowNum;
       this.colNum=colNum;
       this.cellSize=400/ Math.max(rowNum,colNum);
+      this.time=0;
       createGame();
+      timeThread.start();
    }
    public GameController (int rowNum, int colNum, int score, int cellSize) {
       this.rowNum=rowNum;
@@ -41,8 +58,7 @@ public class GameController {
          Class<?> clazz = Class.forName("view.items.V" +
                  model.getClass().getName().replace("model.items.", ""));
          Constructor<?> ctor = clazz.getConstructor(Item.class, int.class);
-         VItem item = (VItem) ctor.newInstance(model, r);
-         return item;
+         return (VItem) ctor.newInstance(model, r);
       }catch (Exception e){
          e.printStackTrace();
       }
@@ -52,7 +68,14 @@ public class GameController {
       gameBoard = new GameBoard(rowNum,colNum);
    }
    public void stopGame() {
+      time=0;
+      isRunning=false;
       gameBoard.stop();
+      try {
+         timeThread.join();
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
    }
    public int getRowNum() {
       return rowNum;
@@ -76,12 +99,10 @@ public class GameController {
          public int getRowCount() {
             return getRowNum();
          }
-
          @Override
          public int getColumnCount() {
             return getColNum();
          }
-
          @Override
          public Object getValueAt(int rowIndex, int columnIndex) {
             List<Item> items = new ArrayList<>(gameBoard.getAllItems());
@@ -99,12 +120,23 @@ public class GameController {
    public KeyListener getKeyListener() {
       return new GameKeyListener(gameBoard);
    }
+
    public void setScore(int score) {
       gameBoard.getPacman().setScore(score);
    }
    public int getScore() {
      return  gameBoard.getPacman().getScore();
    }
+   public int getLives() {
+      return gameBoard.getPacman().getLives();
+   }
+
+   public String getTime() {
+      int minutes=time/60;
+      int seconds=time%60;
+      return String.format("%02d:%02d", minutes, seconds);
+   }
+
    public void saveScore(String playerName) {
       GameScore gameScore = new GameScore();
       gameScore.setPlayerName(playerName);

@@ -8,7 +8,7 @@ import java.awt.*;
 import static java.lang.Thread.sleep;
 
 public abstract class Character extends Item {
-    protected boolean isRunning;
+    protected boolean isRunning=true;
     private int timeToMove;
 
     public enum Direction {
@@ -22,7 +22,7 @@ public abstract class Character extends Item {
         }
     }
     protected Direction direction;
-    private Runnable runner = () -> {
+    private Thread runner = new Thread(() -> {
         try {
             while(isRunning) {
                 move();
@@ -31,11 +31,10 @@ public abstract class Character extends Item {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    };
+    });
     public Character (Point p, Direction d, GameBoard gameBoard, int timeToMove) {
         super(p, gameBoard);
         this.timeToMove=timeToMove;
-        isRunning=true;
         direction=d;
     }
     public Direction getDirection() {
@@ -84,6 +83,11 @@ public abstract class Character extends Item {
     }
     public void stop() {
         isRunning=false;
+        try {
+            runner.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public Runnable getRunner() {
         return runner;

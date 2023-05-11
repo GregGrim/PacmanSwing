@@ -17,23 +17,24 @@ public class Pacman extends Character {
     private int score;
     private int lives;
     private boolean mouthDirection = true;
+    private Thread pacmanThread = new Thread(()->{
+        while (isRunning) {
+            try {
+                sleep(10);
+                mouthOpened+=mouthDirection?10:-10;
+                if(mouthOpened==90||mouthOpened==0) {
+                    mouthDirection=!mouthDirection;
+                }
+            } catch (InterruptedException e) {
+                isRunning = false;
+            }
+        }
+    });
     public Pacman (GameBoard gameBoard) {
-        super(new Point(1,1), Direction.RIGHT, gameBoard,100);
+        super(new Point(1,1), Direction.RIGHT, gameBoard,300);
         this.score=0;
         this.lives=1;
-        new Thread(()->{
-            while (isRunning) {
-                try {
-                    sleep(10);
-                    mouthOpened+=mouthDirection?10:-10;
-                    if(mouthOpened==90||mouthOpened==0) {
-                        mouthDirection=!mouthDirection;
-                    }
-                } catch (InterruptedException e) {
-                    isRunning = false;
-                }
-            }
-        }).start();
+        pacmanThread.start();
     }
 
     @Override
@@ -83,5 +84,15 @@ public class Pacman extends Character {
 
     public void setLives(int lives) {
         this.lives = lives;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        try {
+            pacmanThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -9,7 +9,7 @@ import static model.items.Character.Direction.*;
 import static model.items.Character.Direction.RIGHT;
 
 public class GameKeyListener implements KeyListener {
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
 
     public GameKeyListener(GameBoard gameBoard) {
         this.gameBoard=gameBoard;
@@ -26,6 +26,7 @@ public class GameKeyListener implements KeyListener {
             case 'd' : if(gameBoard.getPacman().getDirection()!=RIGHT)gameBoard.getPacman().setDirection(RIGHT);
                 break;
         }
+//        System.out.println(e.getKeyChar());
     }
     @Override
     public void keyPressed(KeyEvent e) {

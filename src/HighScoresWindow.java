@@ -1,3 +1,4 @@
+import controller.CompoundShortcut;
 import controller.GameScore;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class HighScoresWindow extends JDialog {
         dispatchScores();
         gameScoreList=sortedScores();
         scores = new JList(gameScoreList.toArray());
+        scores.addKeyListener(new CompoundShortcut(this));
         scores.setSize(new Dimension(100,100));
 
         backButton.addActionListener(backButListener);

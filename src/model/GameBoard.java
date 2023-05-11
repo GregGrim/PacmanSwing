@@ -58,7 +58,7 @@ public class GameBoard {
     }
     public void stop() {
         pacman.stop();
-        monsters.forEach(Character::stop);
+        monsters.forEach(Monster::stop);
     }
     public List<Item> getAllItems() {
         return allItems;
