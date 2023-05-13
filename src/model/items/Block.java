@@ -1,7 +1,6 @@
 package model.items;
 
 import model.GameBoard;
-import model.items.Item;
 
 import java.awt.*;
 

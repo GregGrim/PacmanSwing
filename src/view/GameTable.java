@@ -1,9 +1,6 @@
 package view;
 
-import controller.CompoundShortcut;
 import controller.GameController;
-import view.items.VCharacter;
-import view.items.VItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +11,7 @@ public class GameTable extends JTable {
     private GameController gameController;
     private boolean isRunning = true;
     private GameWindow gameWindow;
-    private Thread painter = new Thread(() -> {
+    private final Thread painter = new Thread(() -> {
         try {
             while(isRunning) {
                 repaint();

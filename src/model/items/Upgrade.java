@@ -10,7 +10,7 @@ public class Upgrade extends Item{
     public enum Type {
         SPEED, LIVES, TELEPORT, INVULNERABILITY, DOUBLE_POINTS
     }
-    private Type type;
+    private final Type type;
     public Upgrade(Point p, GameBoard gameBoard, Type type) {
         super(p, gameBoard);
         this.type=type;

@@ -1,3 +1,5 @@
+import view.StartingWindow;
+
 import javax.swing.*;
 
 public class Game {

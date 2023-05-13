@@ -1,17 +1,16 @@
 package model.items;
 
 import model.GameBoard;
-import model.items.Character;
 
 import java.awt.*;
 
 import static java.lang.Thread.sleep;
 
 public class Monster extends Character {
-    private String name;
+    private final String name;
     private boolean vulnerable;
     private boolean alive;
-    private int score;
+    private final int score;
     private int looping;
     private int legsPosition = 0;
     private final Thread monsterThread = new Thread(()->{

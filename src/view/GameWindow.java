@@ -16,16 +16,15 @@ import static java.lang.Thread.sleep;
 
 public class GameWindow extends JDialog{
     GameController gameController;
-    private GridBagConstraints gbc = new GridBagConstraints();
+    private final GridBagConstraints gbc = new GridBagConstraints();
     private GameTable gameTable;
     private JPanel infoPanel;
     private JLabel scoreLabel;
     private JLabel livesLabel;
     private JLabel timeLabel;
     private JTextField textField;
-    private Dimension dimension ;
     private boolean isRunning = true;
-    private Thread panelRepainter = new Thread(()->{
+    private final Thread panelRepainter = new Thread(()->{
         while(isRunning) {
             try {
                 sleep(30);
@@ -38,7 +37,7 @@ public class GameWindow extends JDialog{
             infoPanel.repaint();
         }
     });
-    private ComponentListener componentListener = new ComponentListener() {
+    private final ComponentListener componentListener = new ComponentListener() {
         @Override
         public void componentResized(ComponentEvent e) {
             int newHeight = gameTable.getHeight();
@@ -60,7 +59,7 @@ public class GameWindow extends JDialog{
         @Override
         public void componentHidden(ComponentEvent e) {}
     };
-    private ActionListener okButListener = actionEvent -> {
+    private final ActionListener okButListener = actionEvent -> {
         if(textField.getText().length()>20) {
             JOptionPane.showMessageDialog(this, "Name is too long(max 20 chars)",
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -71,7 +70,7 @@ public class GameWindow extends JDialog{
                 "Error", JOptionPane.ERROR_MESSAGE);
     };
 
-    private ExecutorService exec = Executors.newCachedThreadPool();
+    private final ExecutorService exec = Executors.newCachedThreadPool();
 
     public GameWindow(JFrame parentFrame,int rowNum,int colNum) {
         super(parentFrame, "Game", true);
@@ -81,8 +80,8 @@ public class GameWindow extends JDialog{
         setLocation(0, 0);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         createGameField(rowNum,colNum);
-        dimension = new Dimension(gameController.getCellSize() * colNum,
-                gameController.getCellSize() * rowNum+40);
+        Dimension dimension = new Dimension(gameController.getCellSize() * colNum,
+                gameController.getCellSize() * rowNum + 40);
         setPreferredSize(dimension);
         addKeyListener(new CompoundShortcut(this));
         setFocusable(true);

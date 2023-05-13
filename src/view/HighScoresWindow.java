@@ -1,3 +1,5 @@
+package view;
+
 import controller.CompoundShortcut;
 import controller.GameScore;
 
@@ -11,7 +13,7 @@ import java.util.List;
 
 public class HighScoresWindow extends JDialog {
     private List<GameScore> gameScoreList;
-    private ActionListener backButListener = e -> dispose();
+    private final ActionListener backButListener = e -> dispose();
     public  HighScoresWindow(JFrame parentFrame, Point location) {
         super(parentFrame, "High Scores", true);
         setLocation(location);

@@ -26,7 +26,7 @@ public class GameController {
    private int time;
    private boolean isRunning=true;
 
-   private Thread timeThread = new Thread(() -> {
+   private final Thread timeThread = new Thread(() -> {
       while(isRunning){
          try {
             sleep(1000);
@@ -59,8 +59,8 @@ public class GameController {
       try {
          Class<?> clazz = Class.forName("view.items.V" +
                  model.getClass().getName().replace("model.items.", ""));
-         Constructor<?> ctor = clazz.getConstructor(Item.class, int.class);
-         return (VItem) ctor.newInstance(model, r);
+         Constructor<?> contor = clazz.getConstructor(Item.class, int.class);
+         return (VItem) contor.newInstance(model, r);
       }catch (Exception e){
          e.printStackTrace();
       }

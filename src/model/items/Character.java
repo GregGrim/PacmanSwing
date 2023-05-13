@@ -1,7 +1,6 @@
 package model.items;
 
 import model.GameBoard;
-import model.items.Item;
 
 import java.awt.*;
 
@@ -22,7 +21,7 @@ public abstract class Character extends Item {
         }
     }
     protected Direction direction;
-    private Thread runner = new Thread(() -> {
+    private final Thread runner = new Thread(() -> {
         try {
             while(isRunning) {
                 move();
@@ -42,39 +41,35 @@ public abstract class Character extends Item {
     }
     public synchronized void move() {
         switch (direction) {
-            case UP : {
-                if(gameBoard.getBlocks().get(new Point(point.x, point.y - 1)) == null) {
-                        if(point.y>0) {
-                            point.y-=1;
-                        } else point.y=gameBoard.getRowNum()-1;
-                    }
-                }
-                break;
-            case DOWN : {
-                if(gameBoard.getBlocks().get(new Point(point.x, point.y + 1)) == null) {
-                    if(point.y<gameBoard.getRowNum()-1) {
-                        point.y+=1;
-                    } else point.y=0;
+            case UP -> {
+                if (gameBoard.getBlocks().get(new Point(point.x, point.y - 1)) == null) {
+                    if (point.y > 0) {
+                        point.y -= 1;
+                    } else point.y = gameBoard.getRowNum() - 1;
                 }
             }
-                break;
-            case LEFT : {
-                if(gameBoard.getBlocks().get(new Point(point.x-1, point.y)) == null) {
-                    if(point.x>0) {
-                        point.x-=1;
-                    } else point.x=gameBoard.getColNum()-1;
+            case DOWN -> {
+                if (gameBoard.getBlocks().get(new Point(point.x, point.y + 1)) == null) {
+                    if (point.y < gameBoard.getRowNum() - 1) {
+                        point.y += 1;
+                    } else point.y = 0;
                 }
             }
-                break;
-            case RIGHT : {
+            case LEFT -> {
+                if (gameBoard.getBlocks().get(new Point(point.x - 1, point.y)) == null) {
+                    if (point.x > 0) {
+                        point.x -= 1;
+                    } else point.x = gameBoard.getColNum() - 1;
+                }
+            }
+            case RIGHT -> {
 
-                if(gameBoard.getBlocks().get(new Point(point.x+1, point.y)) == null) {
-                    if(point.x<gameBoard.getColNum()-1) {
-                        point.x+=1;
-                    } else point.x=0;
+                if (gameBoard.getBlocks().get(new Point(point.x + 1, point.y)) == null) {
+                    if (point.x < gameBoard.getColNum() - 1) {
+                        point.x += 1;
+                    } else point.x = 0;
                 }
             }
-            break;
         }
 
     }

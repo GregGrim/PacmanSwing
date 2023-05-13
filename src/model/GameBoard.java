@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.List;
 
 public class GameBoard {
-    private List<Monster> monsters = new ArrayList<>();
-    private Map<Point, Block> blocks = new HashMap();
-    private Pacman pacman;
-    private List<Item> allItems = new ArrayList<>();
-    private Map<Point, Food> foodMap = new HashMap<>();
-    private int rowNum;
-    private int colNum;
+    private final List<Monster> monsters = new ArrayList<>();
+    private final Map<Point, Block> blocks = new HashMap<>();
+    private final Pacman pacman;
+    private final List<Item> allItems = new ArrayList<>();
+    private final Map<Point, Food> foodMap = new HashMap<>();
+    private final int rowNum;
+    private final int colNum;
     private boolean doublePoints = false;
     public GameBoard (int rowNum, int colNum) {
         this.rowNum=rowNum;

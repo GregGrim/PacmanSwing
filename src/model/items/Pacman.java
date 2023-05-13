@@ -15,7 +15,7 @@ public class Pacman extends Character {
     private int lives;
     private boolean mouthDirection = true;
     private boolean invulnerability = false;
-    private Thread pacmanThread = new Thread(()->{
+    private final Thread pacmanThread = new Thread(()->{
         while (isRunning) {
             try {
                 sleep(10);
