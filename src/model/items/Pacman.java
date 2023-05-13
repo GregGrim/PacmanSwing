@@ -15,6 +15,25 @@ public class Pacman extends Character {
     private int lives;
     private boolean mouthDirection = true;
     private boolean invulnerability = false;
+    private Monster onMonster;
+    private final Thread checkingMonster = new Thread(()->{
+        while(isRunning) {
+            if (onMonster==null) {
+                List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
+                for (Monster monster :
+                        monsters) {
+                    if (monster.getPoint().equals(point)) {
+                        onMonster = monster;
+                    }
+                }
+            }
+            try {
+                sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    });
     private final Thread pacmanThread = new Thread(()->{
         while (isRunning) {
             try {
@@ -32,7 +51,9 @@ public class Pacman extends Character {
         super(new Point(1,1), Direction.RIGHT, gameBoard,300);
         this.score=0;
         this.lives=1;
+        this.onMonster=null;
         pacmanThread.start();
+        checkingMonster.start();
     }
 
     @Override
@@ -42,6 +63,7 @@ public class Pacman extends Character {
         checkMonster();
         checkUpgrade();
     }
+
     public int getMouthOpened() {
         return mouthOpened;
     }
@@ -53,7 +75,6 @@ public class Pacman extends Character {
     }
     public void deathProcess() {
         lives--;
-        // TODO death animation!
         point.x=1;
         point.y=1;
     }
@@ -77,24 +98,21 @@ public class Pacman extends Character {
         }
     }
     public void checkMonster() {
-        List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
-        for (Monster monster:
-                monsters) {
-            if(monster.getPoint().equals(point)) {
-                if(monster.isVulnerable()&&monster.isAlive()) {
-                    monster.deathProcess();
-                    score+=monster.getScore();
-                } else if(monster.isAlive()&&!monster.isVulnerable()&&!invulnerability){
-                    deathProcess();
-                    return;
-                }
+        if(onMonster!=null) {
+            if (onMonster.isVulnerable() && onMonster.isAlive()) {
+                onMonster.deathProcess();
+                score += onMonster.getScore();
+            } else if (onMonster.isAlive() && !onMonster.isVulnerable() && !invulnerability) {
+                deathProcess();
             }
         }
+        onMonster=null;
     }
     public void checkUpgrade() {
         List<Item> items = new ArrayList<>(gameBoard.getAllItems());
         Object[] upgradesArray = items
-                .stream().filter(item->item.getPoint().equals(new Point(point.x, point.y))&&item instanceof Upgrade).toArray();
+                .stream().filter(item->item.getPoint().equals(new Point(point.x, point.y))
+                        &&item instanceof Upgrade).toArray();
         if(upgradesArray.length!=0) {
             for (Object o : upgradesArray) {
                 ((Upgrade) o).callUpgrade();
@@ -122,6 +140,7 @@ public class Pacman extends Character {
         super.stop();
         try {
             pacmanThread.join();
+            checkingMonster.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

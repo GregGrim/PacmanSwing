@@ -39,7 +39,7 @@ public abstract class Character extends Item {
     public Direction getDirection() {
         return direction;
     }
-    public synchronized void move() {
+    public void move() {
         switch (direction) {
             case UP -> {
                 if (gameBoard.getBlocks().get(new Point(point.x, point.y - 1)) == null) {
