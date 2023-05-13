@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HighScoresWindow extends JDialog {
-    private JList scores;
     private List<GameScore> gameScoreList;
-    private JButton backButton = new JButton("Back to Menu");
-    private GridBagConstraints gbc = new GridBagConstraints();
     private ActionListener backButListener = e -> dispose();
     public  HighScoresWindow(JFrame parentFrame, Point location) {
         super(parentFrame, "High Scores", true);
@@ -21,14 +18,18 @@ public class HighScoresWindow extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(new Dimension(300,300));
         setResizable(false);
-        GridBagLayout layout = new GridBagLayout();
+        getContentPane().setBackground(Color.BLACK);
+        getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.BLUE));
 
+        GridBagLayout layout = new GridBagLayout();
         dispatchScores();
-        gameScoreList=sortedScores();
-        scores = new JList(gameScoreList.toArray());
+
+        JList<GameScore> scores = new JList(sortedScores());
         scores.addKeyListener(new CompoundShortcut(this));
         scores.setSize(new Dimension(100,100));
 
+        JButton backButton = new JButton("Back to Menu");
+        backButton.setBackground(Color.YELLOW);
         backButton.addActionListener(backButListener);
         backButton.setFocusable(false);
         JScrollPane listScroller = new JScrollPane(scores);
@@ -37,14 +38,15 @@ public class HighScoresWindow extends JDialog {
 
 
         setLayout(layout);
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets=new Insets(10,10,10,10);
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 2;
         gbc.gridy = 1;
-        add(backButton,gbc);
+        add(backButton, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        add(listScroller,gbc);
+        add(listScroller, gbc);
         setVisible(true);
     }
 
@@ -68,7 +70,7 @@ public class HighScoresWindow extends JDialog {
             e.printStackTrace();
         }
     }
-    public List<GameScore> sortedScores() {
-        return gameScoreList.stream().sorted((a,b)->b.getScore()-a.getScore()).toList();
+    public Object[] sortedScores() {
+        return gameScoreList.stream().sorted((a,b)->b.getScore()-a.getScore()).toArray();
     }
 }

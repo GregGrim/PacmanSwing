@@ -61,7 +61,10 @@ public class GameWindow extends JDialog{
         public void componentHidden(ComponentEvent e) {}
     };
     private ActionListener okButListener = actionEvent -> {
-        if(!textField.getText().equals("")){
+        if(textField.getText().length()>20) {
+            JOptionPane.showMessageDialog(this, "Name is too long(max 20 chars)",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } else if(!textField.getText().equals("")){
         gameController.saveScore(textField.getText());
         dispose();
         } else JOptionPane.showMessageDialog(this, "Please enter your name :)",
@@ -162,11 +165,17 @@ public class GameWindow extends JDialog{
     public void createGameOverWindow() {
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
+        getContentPane().setBackground(Color.BLACK);
+        getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.BLUE));
+
         gbc.insets=new Insets(10,10,10,10);
         gbc.fill = GridBagConstraints.VERTICAL;
         JLabel label1 = new JLabel("Game Over");
+        label1.setForeground(Color.YELLOW);
         JLabel label2 = new JLabel("Your Score: "+gameController.getScore());
+        label2.setForeground(Color.YELLOW);
         JLabel label3 = new JLabel("Enter your name and press \"OK\" to continue");
+        label3.setForeground(Color.YELLOW);
         gbc.gridx = 2;
         gbc.gridy = 1;
         add(label1,gbc);
@@ -188,6 +197,7 @@ public class GameWindow extends JDialog{
         JButton button = new JButton("OK");
         button.setPreferredSize(new Dimension(90,30));
         button.setFocusable(false);
+        button.setBackground(Color.YELLOW);
         button.addActionListener(okButListener);
         gbc.gridx = 2;
         gbc.gridy = 5;
