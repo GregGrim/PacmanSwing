@@ -1,5 +1,7 @@
 package view;
 
+
+import controller.CompoundShortcut;
 import controller.GameController;
 
 import javax.swing.*;
@@ -79,6 +81,8 @@ public class GameWindow extends JDialog{
         dimension = new Dimension(gameController.getCellSize() * colNum,
                 gameController.getCellSize() * rowNum+40);
         setPreferredSize(dimension);
+        addKeyListener(new CompoundShortcut(this));
+        setFocusable(true);
         setVisible(true);
     }
     @Override
@@ -151,6 +155,9 @@ public class GameWindow extends JDialog{
         isRunning=true;
         exec.execute(panelRepainter);
         exec.execute(gameTable.getPainter(this));
+        requestFocus();
+        addKeyListener(gameController.getKeyListener());
+        setFocusable(true);
     }
     public void createGameOverWindow() {
         GridBagLayout layout = new GridBagLayout();

@@ -3,6 +3,7 @@ package view;
 import controller.CompoundShortcut;
 import controller.GameController;
 import view.items.VCharacter;
+import view.items.VItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +19,8 @@ public class GameTable extends JTable {
             while(isRunning) {
                 repaint();
                 if(gameController.boardOver()) {
-                    sleep(1500);
                     gameWindow.restartGame();
+                    sleep(1500);
                 }
                 if(gameController.gameOver()) {
                     gameWindow.showGameOver();
@@ -38,7 +39,7 @@ public class GameTable extends JTable {
         setCellSelectionEnabled(false);
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0,0));
-        setDefaultRenderer(VCharacter.class, (table, value, isSelected, hasFocus, row, column) -> (Component) value);
+        setFocusable(false);
         addKeyListener(gameController.getKeyListener());
     }
     public Runnable getPainter(GameWindow gameWindow) {

@@ -17,6 +17,7 @@ public class Pacman extends Character {
     private int score;
     private int lives;
     private boolean mouthDirection = true;
+    private boolean invulnerability = false;
     private Thread pacmanThread = new Thread(()->{
         while (isRunning) {
             try {
@@ -44,17 +45,16 @@ public class Pacman extends Character {
         if(food!=null) {
             gameBoard.getFoodMap().remove(new Point(point.x,point.y));
             gameBoard.getAllItems().remove(food);
-            score+=food.score();
+            score+=gameBoard.isDoublePoints()?food.score()*2:food.score();
         }
         List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
-//        Collections.copy(monsters,gameBoard.getMonsters());
         for (Monster monster:
                 monsters) {
             if(monster.getPoint().equals(point)) {
                 if(monster.isVulnerable()&&monster.isAlive()) {
                     monster.deathProcess();
                     score+=monster.getScore();
-                } else if(monster.isAlive()&&!monster.isVulnerable()){
+                } else if(monster.isAlive()&&!monster.isVulnerable()&&!invulnerability){
                     deathProcess();
                     return;
                 }
@@ -73,7 +73,7 @@ public class Pacman extends Character {
     public void deathProcess() {
         lives--;
         System.out.println(lives);
-        //TODO death animation!
+        // TODO death animation!
         point.x=1;
         point.y=1;
     }
@@ -86,6 +86,12 @@ public class Pacman extends Character {
         this.lives = lives;
     }
 
+    public void setInvulnerability(boolean invulnerability) {
+        this.invulnerability = invulnerability;
+    }
+    public boolean isInvulnerability() {
+        return invulnerability;
+    }
     @Override
     public void stop() {
         super.stop();

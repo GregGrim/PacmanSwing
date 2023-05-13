@@ -3,7 +3,6 @@ package view.items;
 import model.items.Item;
 
 import javax.swing.*;
-import java.lang.reflect.Constructor;
 
 
 public abstract class VItem implements Icon {

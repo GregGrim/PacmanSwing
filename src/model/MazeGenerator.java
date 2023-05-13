@@ -2,15 +2,18 @@ package model;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class MazeGenerator {
-    private int dimensionX, dimensionY; // dimension of maze
-    private int gridDimensionX, gridDimensionY; // dimension of output grid
-    private char[][] grid; // output grid
+    //MazeGenerator algorithm was taken from internet sources,
+    // then refactored for using in Pacman game and dead ends have been removed
+    private final int dimensionX;
+    private final int dimensionY; // dimension of maze
+    private final int gridDimensionX;
+    private final int gridDimensionY; // dimension of output grid
+    private final char[][] grid; // output grid
     private Cell[][] cells; // 2d array of Cells
-    private Random random = new Random(); // The random object
+    private final Random random = new Random(); // The random object
 
     // constructor
     public MazeGenerator(int xDimension, int yDimension) {
@@ -27,22 +30,11 @@ public class MazeGenerator {
     public char[][] getGrid() {
         return grid;
     }
-    public class Cell {
+    public static class Cell {
         int x, y; // coordinates
         // cells this cell is connected to
         ArrayList<MazeGenerator.Cell> neighbors = new ArrayList<>();
-        // solver: if already used
-        boolean visited = false;
-        // solver: the Cell before this one in the path
-        MazeGenerator.Cell parent = null;
-        // solver: if used in last attempt to solve path
-        boolean inPath = false;
-        // solver: distance travelled this far
-        double travelled;
-        // solver: projected distance to end
-        double projectedDist;
-        // impassable cell
-        boolean wall = true;
+        boolean wall;
         // if true, has yet to be used in generation
         boolean open = true;
         // construct Cell at x, y
@@ -64,14 +56,13 @@ public class MazeGenerator {
                 other.neighbors.add(this);
             }
         }
-
         // used in updateGrid()
         boolean isCellBelowNeighbor() {
-            return this.neighbors.contains(new MazeGenerator.Cell(this.x, this.y + 1));
+            return this.neighbors.contains(new Cell(this.x, this.y + 1));
         }
         // used in updateGrid()
         boolean isCellRightNeighbor() {
-            return this.neighbors.contains(new MazeGenerator.Cell(this.x + 1, this.y));
+            return this.neighbors.contains(new Cell(this.x + 1, this.y));
         }
         // useful Cell representation
         @Override
@@ -81,8 +72,7 @@ public class MazeGenerator {
         // useful Cell equivalence
         @Override
         public boolean equals(Object other) {
-            if (!(other instanceof MazeGenerator.Cell)) return false;
-            MazeGenerator.Cell otherCell = (MazeGenerator.Cell) other;
+            if (!(other instanceof Cell otherCell)) return false;
             return (this.x == otherCell.x && this.y == otherCell.y);
         }
         // should be overridden with equals
@@ -102,13 +92,9 @@ public class MazeGenerator {
             }
         }
     }
-    // generate from upper left (In computing the y increases down often)
-    private void generateMaze() {
-        generateMaze(0, 0);
-    }
     // generate the maze from coordinates x, y
-    private void generateMaze(int x, int y) {
-        generateMaze(getCell(x, y)); // generate from Cell
+    private void generateMaze() {
+        generateMaze(getCell(0, 0)); // generate from Cell
     }
     private void generateMaze(Cell startAt) {
         // don't generate from cell not there
@@ -119,7 +105,7 @@ public class MazeGenerator {
 
         while (!cells.isEmpty()) {
             Cell cell;
-            // this is to reduce but not completely eliminate the number
+            //   this is to reduce but not completely eliminate the number
             //   of long twisting halls with short easy to detect branches
             //   which results in easy mazes
             if (random.nextInt(10)==0)
@@ -148,7 +134,6 @@ public class MazeGenerator {
             cells.add(cell);
             cells.add(selected);
         }
-
     }
     // used to get a Cell at x, y; returns null out of bounds
     public Cell getCell(int x, int y) {
@@ -158,82 +143,9 @@ public class MazeGenerator {
             return null;
         }
     }
-
-    //    public void solve() {
-//        // default solve top left to bottom right
-//        this.solve(0, 0, dimensionX - 1, dimensionY -1);
-//    }
-    // solve the maze starting from the start state (A-star algorithm)
-//    public void solve(int startX, int startY, int endX, int endY) {
-//        // re initialize cells for path finding
-//        for (Cell[] cellrow : this.cells) {
-//            for (Cell cell : cellrow) {
-//                cell.parent = null;
-//                cell.visited = false;
-//                cell.inPath = false;
-//                cell.travelled = 0;
-//                cell.projectedDist = -1;
-//            }
-//        }
-//        // cells still being considered
-//        ArrayList<Cell> openCells = new ArrayList<>();
-//        // cell being considered
-//        Cell endCell = getCell(endX, endY);
-//        if (endCell == null) return; // quit if end out of bounds
-//        { // anonymous block to delete start, because not used later
-//            Cell start = getCell(startX, startY);
-//            if (start == null) return; // quit if start out of bounds
-//            start.projectedDist = getProjectedDistance(start, 0, endCell);
-//            start.visited = true;
-//            openCells.add(start);
-//        }
-//        boolean solving = true;
-//        while (solving) {
-//            if (openCells.isEmpty()) return; // quit, no path
-//            // sort openCells according to least projected distance
-//            Collections.sort(openCells, new Comparator<Cell>(){
-//                @Override
-//                public int compare(Cell cell1, Cell cell2) {
-//                    double diff = cell1.projectedDist - cell2.projectedDist;
-//                    if (diff > 0) return 1;
-//                    else if (diff < 0) return -1;
-//                    else return 0;
-//                }
-//            });
-//            Cell current = openCells.remove(0); // pop cell least projectedDist
-//            if (current == endCell) break; // at end
-//            for (Cell neighbor : current.neighbors) {
-//                double projDist = getProjectedDistance(neighbor,
-//                        current.travelled + 1, endCell);
-//                if (!neighbor.visited || // not visited yet
-//                        projDist < neighbor.projectedDist) { // better path
-//                    neighbor.parent = current;
-//                    neighbor.visited = true;
-//                    neighbor.projectedDist = projDist;
-//                    neighbor.travelled = current.travelled + 1;
-//                    if (!openCells.contains(neighbor))
-//                        openCells.add(neighbor);
-//                }
-//            }
-//        }
-//        // create path from end to beginning
-//        Cell backtracking = endCell;
-//        backtracking.inPath = true;
-//        while (backtracking.parent != null) {
-//            backtracking = backtracking.parent;
-//            backtracking.inPath = true;
-//        }
-//    }
-    // get the projected distance
-    // (A star algorithm consistent)
-    public double getProjectedDistance(Cell current, double travelled, Cell end) {
-        return travelled + Math.abs(current.x - end.x) +
-                Math.abs(current.y - current.x);
-    }
-
     // draw the maze
     public void updateGrid() {
-       final char backChar = 'Y', wallChar = 'X', cellChar = ' ', pathChar = '*';
+       final char backChar = 'Y', wallChar = 'X', cellChar = ' ';
         // fill background
         for (int x = 0; x < gridDimensionX; x ++) {
             for (int y = 0; y < gridDimensionY; y ++) {
@@ -251,47 +163,19 @@ public class MazeGenerator {
         for (int x = 0; x < dimensionX; x++) {
             for (int y = 0; y < dimensionY; y++) {
                 Cell current = getCell(x, y);
-//                if(current.isCellBelowNeighbor()||current.isCellRightNeighbor()){
-//                    System.out.print(".");
-//                }  else System.out.print(" ");
-
                 int gridX = x * 4 + 2, gridY = y * 2 + 1;
-
-                    grid[gridX][gridY] = cellChar;
-                    if (current.isCellBelowNeighbor()) {
-                        grid[gridX][gridY + 1] = cellChar;
-                        grid[gridX + 1][gridY + 1] = backChar;
-                        grid[gridX - 1][gridY + 1] = backChar;
-                    }
-                    if (current.isCellRightNeighbor()) {
-                        grid[gridX + 2][gridY] = cellChar;
-                        grid[gridX + 1][gridY] = cellChar;
-                        grid[gridX + 3][gridY] = cellChar;
-                    }
+                grid[gridX][gridY] = cellChar;
+                if (current.isCellBelowNeighbor()) {
+                    grid[gridX][gridY + 1] = cellChar;
+                    grid[gridX + 1][gridY + 1] = backChar;
+                    grid[gridX - 1][gridY + 1] = backChar;
+                }
+                if (current.isCellRightNeighbor()) {
+                    grid[gridX + 2][gridY] = cellChar;
+                    grid[gridX + 1][gridY] = cellChar;
+                    grid[gridX + 3][gridY] = cellChar;
                 }
             }
         }
-
-    // simply prints the map
-    public void draw() {
-        System.out.print(this);
     }
-    // forms a meaningful representation
-    @Override
-    public String toString() {
-        updateGrid();
-        StringBuilder output = new StringBuilder();
-        for (int y = 0; y < gridDimensionY; y++) {
-            for (int x = 0; x < gridDimensionX; x++) {
-                output.append(grid[x][y]);
-            }
-            output.append("\n");
-        }
-        return output.toString();
-    }
-
-//    // run it
-//    public static void main(String[] args) {
-//        MazeGenerator maze = new MazeGenerator(10);
-//   }
 }

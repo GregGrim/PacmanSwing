@@ -14,6 +14,7 @@ public class GameBoard {
     private Map<Point, Food> foodMap = new HashMap<>();
     private int rowNum;
     private int colNum;
+    private boolean doublePoints = false;
     public GameBoard (int rowNum, int colNum) {
         this.rowNum=rowNum;
         this.colNum=colNum;
@@ -60,6 +61,24 @@ public class GameBoard {
         pacman.stop();
         monsters.forEach(Monster::stop);
     }
+
+    public void setDoublePoints(boolean doublePoints) {
+        this.doublePoints = doublePoints;
+    }
+    public boolean isDoublePoints() {
+        return doublePoints;
+    }
+    public synchronized void createUpgrade(int x, int y) {
+        allItems.removeIf(item -> item.getPoint().equals(new Point(x,y))&&item.getClass().isAssignableFrom(Food.class));
+        switch ((int) (Math.random()*5)) {
+            case 0-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.SPEED));
+            case 1-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.LIVES));
+            case 2-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.TELEPORT));
+            case 3-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.INVULNERABILITY));
+            case 4-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.DOUBLE_POINTS));
+        }
+    }
+
     public List<Item> getAllItems() {
         return allItems;
     }

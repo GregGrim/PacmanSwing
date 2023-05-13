@@ -92,4 +92,12 @@ public abstract class Character extends Item {
     public Runnable getRunner() {
         return runner;
     }
+
+    public void setTimeToMove(int timeToMove) {
+        this.timeToMove = timeToMove;
+    }
+
+    public int getTimeToMove() {
+        return timeToMove;
+    }
 }

@@ -25,6 +25,15 @@ public class Monster extends Character {
             }
         }
     });
+    private Thread createUpgrade = new Thread(()->{
+        while (isRunning) {
+            try {
+                sleep(5000);
+                if(Math.random()<0.25) gameBoard.createUpgrade(point.x,point.y);
+            } catch (InterruptedException ignored) {
+            }
+        }
+    });
 
     public Monster(String name, GameBoard gameBoard) {
         super(new Point(gameBoard.getColNum()-2,gameBoard.getRowNum()-2), getRandomDirection(), gameBoard,400);
@@ -34,6 +43,7 @@ public class Monster extends Character {
         this.alive=true;
         this.looping=0;
         monsterThread.start();
+        createUpgrade.start();
     }
     private static Direction getRandomDirection() {
         switch ((int) (Math.random() * 4)) {
@@ -129,6 +139,8 @@ public class Monster extends Character {
         super.stop();
         try {
             monsterThread.join();
+            createUpgrade.interrupt();
+            createUpgrade.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

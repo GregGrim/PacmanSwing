@@ -92,7 +92,6 @@ public class GameController {
    public void setCellSize(int cellSize) {
       this.cellSize = cellSize;
    }
-
    public TableModel getGameTableModel() {
       return new AbstractTableModel() {
          @Override
