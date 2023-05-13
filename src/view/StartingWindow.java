@@ -25,7 +25,7 @@ public class StartingWindow extends JFrame {
     private final ActionListener scoresButListener = e ->
             SwingUtilities.invokeLater(()-> new HighScoresWindow(this,getLocation()));
     private final ActionListener exitButListener = e -> System.exit(0);
-
+    // starting window of the program
     public StartingWindow() {
         super("Menu");
         setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
+// shortcut to close any other window except startingWindow
 public class CompoundShortcut implements KeyListener {
 
     Window window;

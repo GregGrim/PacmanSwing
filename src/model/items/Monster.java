@@ -6,6 +6,7 @@ import java.awt.*;
 
 import static java.lang.Thread.sleep;
 
+// enemies of pacman
 public class Monster extends Character {
     private final String name;
     private boolean vulnerable;
@@ -13,6 +14,7 @@ public class Monster extends Character {
     private final int score;
     private int looping;
     private int legsPosition = 0;
+    // thread for movement animation
     private final Thread monsterThread = new Thread(()->{
         while (isRunning) {
             try {
@@ -24,6 +26,7 @@ public class Monster extends Character {
             }
         }
     });
+    // thread for creating upgrades
     private final Thread createUpgrade = new Thread(()->{
         while (isRunning) {
             try {
@@ -44,6 +47,7 @@ public class Monster extends Character {
         monsterThread.start();
         createUpgrade.start();
     }
+    // returns random direction
     private static Direction getRandomDirection() {
         switch ((int) (Math.random() * 4)) {
             case 0 -> {
@@ -61,7 +65,7 @@ public class Monster extends Character {
         }
         return null;
     }
-
+    //overriden function to provide more efficient pacman pursuing algorithm
     @Override
     public void move() {
         int x = point.x;
@@ -125,7 +129,7 @@ public class Monster extends Character {
     public int getScore() {
         return score;
     }
-
+    // sets monster to be dead for 5 sec
     public void deathProcess() {
         new Thread(()->{
             setAlive(false);
@@ -142,6 +146,7 @@ public class Monster extends Character {
     public int getLegsPosition() {
         return legsPosition;
     }
+    // stops all threads connected to monster
     @Override
     public void stop() {
         super.stop();

@@ -5,11 +5,11 @@ import model.GameBoard;
 import java.awt.*;
 
 import static java.lang.Thread.sleep;
-
+// abstract class of characters in game
 public abstract class Character extends Item {
     protected boolean isRunning=true;
     private int timeToMove;
-
+ // 4 possible directions
     public enum Direction {
         UP(90), DOWN(270), LEFT(180), RIGHT(0);
         private final int value;
@@ -21,6 +21,7 @@ public abstract class Character extends Item {
         }
     }
     protected Direction direction;
+    // thread to move characters
     private final Thread runner = new Thread(() -> {
         try {
             while(isRunning) {
@@ -39,6 +40,7 @@ public abstract class Character extends Item {
     public Direction getDirection() {
         return direction;
     }
+    // changes coordinates of characters depending on walls and direction
     public void move() {
         switch (direction) {
             case UP -> {
@@ -76,6 +78,7 @@ public abstract class Character extends Item {
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
+    // stops movement
     public void stop() {
         isRunning=false;
         try {
@@ -87,7 +90,7 @@ public abstract class Character extends Item {
     public Runnable getRunner() {
         return runner;
     }
-
+    // changes move speed
     public void setTimeToMove(int timeToMove) {
         this.timeToMove = timeToMove;
     }

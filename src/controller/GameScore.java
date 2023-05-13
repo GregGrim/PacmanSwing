@@ -2,7 +2,7 @@ package controller;
 
 import java.io.Serial;
 import java.io.Serializable;
-
+ // class of an object to be written in file
 public class GameScore implements Serializable {
 
     @Serial

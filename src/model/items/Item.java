@@ -3,7 +3,7 @@ package model.items;
 import model.GameBoard;
 
 import java.awt.*;
-
+// abstract class of any item in game
 public abstract class Item {
     protected Point point;
     protected GameBoard gameBoard;

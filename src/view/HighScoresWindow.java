@@ -14,6 +14,7 @@ import java.util.List;
 public class HighScoresWindow extends JDialog {
     private List<GameScore> gameScoreList;
     private final ActionListener backButListener = e -> dispose();
+    // window of high scores
     public  HighScoresWindow(JFrame parentFrame, Point location) {
         super(parentFrame, "High Scores", true);
         setLocation(location);
@@ -51,7 +52,7 @@ public class HighScoresWindow extends JDialog {
         add(listScroller, gbc);
         setVisible(true);
     }
-
+    // takes info about score from file
     public void dispatchScores() {
         try {
             FileInputStream fis = new FileInputStream("gameScores.txt");
@@ -72,6 +73,7 @@ public class HighScoresWindow extends JDialog {
             e.printStackTrace();
         }
     }
+    // sorting scores in desc order
     public Object[] sortedScores() {
         return gameScoreList.stream().sorted((a,b)->b.getScore()-a.getScore()).toArray();
     }

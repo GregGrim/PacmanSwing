@@ -24,6 +24,7 @@ public class GameWindow extends JDialog{
     private JLabel timeLabel;
     private JTextField textField;
     private boolean isRunning = true;
+    // repaints info panel
     private final Thread panelRepainter = new Thread(()->{
         while(isRunning) {
             try {
@@ -37,6 +38,7 @@ public class GameWindow extends JDialog{
             infoPanel.repaint();
         }
     });
+    // scalability listener
     private final ComponentListener componentListener = new ComponentListener() {
         @Override
         public void componentResized(ComponentEvent e) {
@@ -69,9 +71,9 @@ public class GameWindow extends JDialog{
         } else JOptionPane.showMessageDialog(this, "Please enter your name :)",
                 "Error", JOptionPane.ERROR_MESSAGE);
     };
-
+    // executor for repainting in gui
     private final ExecutorService exec = Executors.newCachedThreadPool();
-
+    // frame of main game window
     public GameWindow(JFrame parentFrame,int rowNum,int colNum) {
         super(parentFrame, "Game", true);
         setPreferredSize(new Dimension(400,400));
@@ -87,6 +89,7 @@ public class GameWindow extends JDialog{
         setFocusable(true);
         setVisible(true);
     }
+    // shutting down all threads and disposes game window
     @Override
     public void dispose() {
         super.dispose();
@@ -94,15 +97,17 @@ public class GameWindow extends JDialog{
         gameController.stopGame();
 
     }
+    // function to be called in first round
     public void createGameField(int rowNum,int colNum) {
         gameController = new GameController(rowNum,colNum);
         createGameFieldComponents();
     }
+    // function to be called for restart
     public void createGameField(int rowNum,int colNum, int score, int time,int lives) {
         gameController = new GameController(rowNum,colNum,score,time,lives);
         createGameFieldComponents();
     }
-
+// restarts game when board is over
     public void restartGame() {
         stop();
         createGameField(gameController.getRowNum(),gameController.getColNum(),
@@ -124,6 +129,7 @@ public class GameWindow extends JDialog{
         stop();
         createGameOverWindow();
     }
+    // creates panel and game table for game
     public void createGameFieldComponents() {
         gameTable =new GameTable(gameController);
         scoreLabel=new JLabel("Score: "+gameController.getScore());
@@ -161,6 +167,7 @@ public class GameWindow extends JDialog{
         addKeyListener(gameController.getKeyListener());
         setFocusable(true);
     }
+    // window appears when pacman has no more lives
     public void createGameOverWindow() {
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);

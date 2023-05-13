@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
-
+// main character of the game
 public class Pacman extends Character {
 
     private int mouthOpened = 0;
@@ -16,6 +16,7 @@ public class Pacman extends Character {
     private boolean mouthDirection = true;
     private boolean invulnerability = false;
     private Monster onMonster;
+    // thread that checks if monster is on the same cell with pacman
     private final Thread checkingMonster = new Thread(()->{
         while(isRunning) {
             if (onMonster==null) {
@@ -35,6 +36,7 @@ public class Pacman extends Character {
             }
         }
     });
+    // pacman mouth animation thread
     private final Thread pacmanThread = new Thread(()->{
         while (isRunning) {
             try {
@@ -56,7 +58,7 @@ public class Pacman extends Character {
         pacmanThread.start();
         checkingMonster.start();
     }
-
+    // overriden function to check items on pacman`s cell
     @Override
     public void move() {
         super.move();
@@ -78,6 +80,7 @@ public class Pacman extends Character {
         point.x=1;
         point.y=1;
     }
+    //checks if pacman on cell with food
     public void checkFood() {
         Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
         if(food!=null) {
@@ -97,6 +100,7 @@ public class Pacman extends Character {
             gameBoard.getAllItems().remove(food);
         }
     }
+    //checks if pacman on cell with monster
     public void checkMonster() {
         if(onMonster!=null) {
             if (onMonster.isVulnerable() && onMonster.isAlive()) {
@@ -108,6 +112,7 @@ public class Pacman extends Character {
         }
         onMonster=null;
     }
+    //checks if pacman on cell with upgrade
     public void checkUpgrade() {
         List<Item> items = new ArrayList<>(gameBoard.getAllItems());
         Object[] upgradesArray = items
@@ -135,6 +140,7 @@ public class Pacman extends Character {
     public boolean isInvulnerability() {
         return invulnerability;
     }
+    //stops all threads connected to pacman
     @Override
     public void stop() {
         super.stop();

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+// main model class
 public class GameBoard {
     private final List<Monster> monsters = new ArrayList<>();
     private final Map<Point, Block> blocks = new HashMap<>();
@@ -32,6 +33,7 @@ public class GameBoard {
         blocks.remove(new Point(colNum-1,rowNum-4));
         allItems.add(pacman);
         allItems.addAll(monsters);
+        // fills empty space with food
         for (int i = 0; i < colNum; i++) {
             for (int j = 0; j < rowNum; j++) {
                 Point point = new Point(i,j) ;
@@ -68,6 +70,7 @@ public class GameBoard {
     public boolean isDoublePoints() {
         return doublePoints;
     }
+    // adds upgrade to the game field
     public synchronized void createUpgrade(int x, int y) {
         allItems.removeIf(item -> (new Point(x,y)).equals(item.getPoint())&&Food.class.isAssignableFrom(item.getClass()));
         switch ((int) (Math.random()*5)) {
@@ -90,6 +93,7 @@ public class GameBoard {
     public Map<Point, Food> getFoodMap() {
         return foodMap;
     }
+    //creates maze and adds walls to model
     public void addWallsToModel() {
         MazeGenerator mazeGenerator = new MazeGenerator((colNum)/2, (rowNum)/2);
         for (int i = 0; i < colNum; i++) { // adding all walls to the model
@@ -101,6 +105,7 @@ public class GameBoard {
             }
         }
     }
+    //finds and removes all dead ends in maze
     public void checkerboardDeadEnds() {
         for (int i = 0; i < colNum; i++) {
             for (int j = 0; j < rowNum; j++) {

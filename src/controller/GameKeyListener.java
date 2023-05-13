@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import static model.items.Character.Direction.*;
 import static model.items.Character.Direction.RIGHT;
 
+// pacman control buttons
 public class GameKeyListener implements KeyListener {
     private final GameBoard gameBoard;
 

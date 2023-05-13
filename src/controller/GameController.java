@@ -26,6 +26,7 @@ public class GameController {
    private int time;
    private boolean isRunning=true;
 
+   // thread to count time in game
    private final Thread timeThread = new Thread(() -> {
       while(isRunning){
          try {
@@ -36,7 +37,7 @@ public class GameController {
          }
       }
    });
-
+   // constructor to be called in first round
    public GameController (int rowNum, int colNum) {
       this.rowNum=rowNum;
       this.colNum=colNum;
@@ -45,6 +46,7 @@ public class GameController {
       createGame();
       timeThread.start();
    }
+   // constructor to be called when restarting board
    public GameController (int rowNum, int colNum, int score, int time,int lives) {
       this.rowNum=rowNum;
       this.colNum=colNum;
@@ -54,7 +56,7 @@ public class GameController {
       setLives(lives);
       timeThread.start();
    }
-
+   // reflective function that creates views of item models using abstract factory
    public VItem newItem(Item model, int r) {
       try {
          Class<?> clazz = Class.forName("view.items.V" +
@@ -66,9 +68,11 @@ public class GameController {
       }
       return null;
    }
+   // creates model of the game
    public void createGame() {
       gameBoard = new GameBoard(rowNum,colNum);
    }
+   // stops the game
    public void stopGame() {
       gameBoard.stop();
       isRunning=false;
@@ -133,7 +137,7 @@ public class GameController {
    public void setLives(int lives) {
       gameBoard.getPacman().setLives(lives);
    }
-
+   // returns time in Time Format
    public String getTime() {
       int minutes=time/60;
       int seconds=time%60;
@@ -143,7 +147,7 @@ public class GameController {
       return time;
    }
 
-
+   // writes game score to the file
    public void saveScore(String playerName) {
       GameScore gameScore = new GameScore();
       gameScore.setPlayerName(playerName);

@@ -5,8 +5,9 @@ import model.GameBoard;
 import java.awt.*;
 
 import static java.lang.Thread.sleep;
-
+// upgrade that monster is leaving behind and can be picked up by pacman
 public class Upgrade extends Item{
+    // five different types of significant upgrades
     public enum Type {
         SPEED, LIVES, TELEPORT, INVULNERABILITY, DOUBLE_POINTS
     }
@@ -19,7 +20,8 @@ public class Upgrade extends Item{
     public Type getType() {
         return type;
     }
-
+    // function is called when pacman is picking up upgrade
+    // implements upgrade mechanics
     public void callUpgrade() {
         switch (type) {
             case LIVES -> gameBoard.getPacman().setLives(gameBoard.getPacman().getLives()+1);
