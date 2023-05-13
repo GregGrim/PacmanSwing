@@ -18,6 +18,10 @@ public class VPacman extends VCharacter {
         g.fillArc(x,y,r,r,
                 ((Pacman)model).getMouthOpened()/2+ ((Character)model).getDirection().getValue(),
                 360-((Pacman)model).getMouthOpened());
+        if (((Pacman)model).isInvulnerability()) {
+            g.setColor(Color.MAGENTA);
+            g.drawOval(x,y,r,r);
+        }
     }
     @Override
     public int getIconWidth() {

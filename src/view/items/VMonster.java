@@ -13,20 +13,22 @@ public class VMonster extends VCharacter {
     }
     public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        // monster body
-        g2d.setColor(getColor(((Monster)model).getName()));
-        g2d.fillArc(x, y, r, r, 0, 180); // upper half
-        g2d.fillRect(x, y + r / 2, r, r / 2); // lower half
-        // monster legs
-        g2d.setColor(Color.BLACK);
-        double legWidth = r / 10.0;
-        double legHeight = r / 5.0;
-        for (int i = ((Monster)model).getLegsPosition(); i < 10; i+=2) {
-            double legX = x + i*legWidth;
-            double legY = y + r * 0.85;
-            Rectangle2D.Double leg = new Rectangle2D.Double(legX, legY, legWidth, legHeight);
-            g2d.fill(leg);
+        if(((Monster)model).isAlive()) {
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            // monster body
+            g2d.setColor(getColor(((Monster) model).getName()));
+            g2d.fillArc(x, y, r, r, 0, 180); // upper half
+            g2d.fillRect(x, y + r / 2, r, r / 2); // lower half
+            // monster legs
+            g2d.setColor(Color.BLACK);
+            double legWidth = r / 10.0;
+            double legHeight = r / 5.0;
+            for (int i = ((Monster) model).getLegsPosition(); i < 10; i += 2) {
+                double legX = x + i * legWidth;
+                double legY = y + r * 0.85;
+                Rectangle2D.Double leg = new Rectangle2D.Double(legX, legY, legWidth, legHeight);
+                g2d.fill(leg);
+            }
         }
         g2d.setColor(Color.white);
         int eyeSize = r / 5;

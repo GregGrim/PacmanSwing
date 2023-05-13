@@ -3,12 +3,8 @@ package view.items;
 import model.items.Item;
 import model.items.Upgrade;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
+
 
 public class VUpgrade extends VItem {
 

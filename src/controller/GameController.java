@@ -45,12 +45,14 @@ public class GameController {
       createGame();
       timeThread.start();
    }
-   public GameController (int rowNum, int colNum, int score, int cellSize) {
+   public GameController (int rowNum, int colNum, int score, int time,int lives) {
       this.rowNum=rowNum;
       this.colNum=colNum;
       createGame();
-      this.cellSize=cellSize;
+      this.time=time;
       setScore(score);
+      setLives(lives);
+      timeThread.start();
    }
 
    public VItem newItem(Item model, int r) {
@@ -68,9 +70,8 @@ public class GameController {
       gameBoard = new GameBoard(rowNum,colNum);
    }
    public void stopGame() {
-      time=0;
-      isRunning=false;
       gameBoard.stop();
+      isRunning=false;
       try {
          timeThread.join();
       } catch (InterruptedException e) {
@@ -129,12 +130,19 @@ public class GameController {
    public int getLives() {
       return gameBoard.getPacman().getLives();
    }
+   public void setLives(int lives) {
+      gameBoard.getPacman().setLives(lives);
+   }
 
    public String getTime() {
       int minutes=time/60;
       int seconds=time%60;
       return String.format("%02d:%02d", minutes, seconds);
    }
+   public int getTimeValue() {
+      return time;
+   }
+
 
    public void saveScore(String playerName) {
       GameScore gameScore = new GameScore();

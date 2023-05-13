@@ -14,7 +14,7 @@ public class Monster extends Character {
     private int score;
     private int looping;
     private int legsPosition = 0;
-    private Thread monsterThread = new Thread(()->{
+    private final Thread monsterThread = new Thread(()->{
         while (isRunning) {
             try {
                 sleep(150);
@@ -25,7 +25,7 @@ public class Monster extends Character {
             }
         }
     });
-    private Thread createUpgrade = new Thread(()->{
+    private final Thread createUpgrade = new Thread(()->{
         while (isRunning) {
             try {
                 sleep(5000);
@@ -128,7 +128,16 @@ public class Monster extends Character {
     }
 
     public void deathProcess() {
-        setAlive(false);
+        new Thread(()->{
+            setAlive(false);
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            setAlive(true);
+        }).start();
+
     }
 
     public int getLegsPosition() {

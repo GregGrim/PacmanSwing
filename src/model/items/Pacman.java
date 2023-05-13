@@ -53,7 +53,6 @@ public class Pacman extends Character {
     }
     public void deathProcess() {
         lives--;
-        System.out.println(lives);
         // TODO death animation!
         point.x=1;
         point.y=1;
@@ -62,6 +61,17 @@ public class Pacman extends Character {
         Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
         if(food!=null) {
             score+=gameBoard.isDoublePoints()?food.score()*2:food.score();
+            if(SuperFood.class.isAssignableFrom(food.getClass())){
+                new Thread(()->{
+                    gameBoard.getMonsters().forEach(m->m.setVulnerable(true));
+                    try {
+                        sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    gameBoard.getMonsters().forEach(m->m.setVulnerable(false));
+                }).start();
+            }
             gameBoard.getFoodMap().remove(new Point(point.x,point.y));
             gameBoard.getAllItems().remove(food);
         }
@@ -82,7 +92,8 @@ public class Pacman extends Character {
         }
     }
     public void checkUpgrade() {
-        Object[] upgradesArray = gameBoard.getAllItems()
+        List<Item> items = new ArrayList<>(gameBoard.getAllItems());
+        Object[] upgradesArray = items
                 .stream().filter(item->item.getPoint().equals(new Point(point.x, point.y))&&item instanceof Upgrade).toArray();
         if(upgradesArray.length!=0) {
             for (Object o : upgradesArray) {

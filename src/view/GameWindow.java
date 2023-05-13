@@ -96,15 +96,15 @@ public class GameWindow extends JDialog{
         gameController = new GameController(rowNum,colNum);
         createGameFieldComponents();
     }
-    public void createGameField(int rowNum,int colNum, int score, int cellSize) {
-        gameController = new GameController(rowNum,colNum,score,cellSize);
+    public void createGameField(int rowNum,int colNum, int score, int time,int lives) {
+        gameController = new GameController(rowNum,colNum,score,time,lives);
         createGameFieldComponents();
     }
 
     public void restartGame() {
         stop();
         createGameField(gameController.getRowNum(),gameController.getColNum(),
-                gameController.getScore(),gameController.getCellSize());
+                gameController.getScore(),gameController.getTimeValue(),gameController.getLives());
     }
     private void stop() {
         isRunning=false;

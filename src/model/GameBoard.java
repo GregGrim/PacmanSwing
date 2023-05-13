@@ -69,7 +69,7 @@ public class GameBoard {
         return doublePoints;
     }
     public synchronized void createUpgrade(int x, int y) {
-        allItems.removeIf(item -> item.getPoint().equals(new Point(x,y))&&Food.class.isAssignableFrom(item.getClass()));
+        allItems.removeIf(item -> (new Point(x,y)).equals(item.getPoint())&&Food.class.isAssignableFrom(item.getClass()));
         switch ((int) (Math.random()*5)) {
             case 0-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.SPEED));
             case 1-> allItems.add(new Upgrade(new Point(x,y),this, Upgrade.Type.LIVES));
