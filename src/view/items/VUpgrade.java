@@ -5,6 +5,10 @@ import model.items.Upgrade;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 
 public class VUpgrade extends VItem {
 
@@ -16,24 +20,27 @@ public class VUpgrade extends VItem {
     public void paintIcon(Component c, Graphics g, int x, int y) {
         switch (((Upgrade)model).getType()) {
             case SPEED -> {
-                g.setColor(Color.RED);
-                g.fillOval(x,y,r/3,r/3);
+                g.setColor(Color.CYAN);
+                g.fillRect(r/2-r/10,r/2-r/10-r/4,r/5, r/5);
+                g.fillRect(r/2-r/10,r/2-r/10,r/5, r/5);
+                g.fillRect(r/2-r/10,r/2-r/10+r/4,r/5, r/5);
             }
             case LIVES -> {
                 g.setColor(Color.RED);
-                g.fillOval(x,y,r/3,r/3);
+                g.fillRect(0,r/2-r/10,r,r/5);
+                g.fillRect(r/2-r/10,0,r/5,r);
             }
             case TELEPORT -> {
-                g.setColor(Color.RED);
-                g.fillOval(x,y,r/3,r/3);
+                g.setColor(new Color(100,0,200));
+                g.drawString("TP",x,y);
             }
             case INVULNERABILITY -> {
-                g.setColor(Color.RED);
-                g.fillOval(x,y,r/3,r/3);
+                g.setColor(Color.MAGENTA);
+                g.drawOval(r/4,r/4,r/2,r/2);
             }
             case DOUBLE_POINTS -> {
-                g.setColor(Color.RED);
-                g.fillOval(x,y,r/3,r/3);
+                g.setColor(new Color(255,140,0));
+                g.drawString("DP",x,y);
             }
         }
     }

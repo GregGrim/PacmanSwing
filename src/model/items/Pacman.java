@@ -1,9 +1,6 @@
 package model.items;
 
 import model.GameBoard;
-import model.items.Character;
-import model.items.Food;
-import model.items.Monster;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,25 +38,9 @@ public class Pacman extends Character {
     @Override
     public void move() {
         super.move();
-        Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
-        if(food!=null) {
-            gameBoard.getFoodMap().remove(new Point(point.x,point.y));
-            gameBoard.getAllItems().remove(food);
-            score+=gameBoard.isDoublePoints()?food.score()*2:food.score();
-        }
-        List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
-        for (Monster monster:
-                monsters) {
-            if(monster.getPoint().equals(point)) {
-                if(monster.isVulnerable()&&monster.isAlive()) {
-                    monster.deathProcess();
-                    score+=monster.getScore();
-                } else if(monster.isAlive()&&!monster.isVulnerable()&&!invulnerability){
-                    deathProcess();
-                    return;
-                }
-            }
-        }
+        checkFood();
+        checkMonster();
+        checkUpgrade();
     }
     public int getMouthOpened() {
         return mouthOpened;
@@ -76,6 +57,39 @@ public class Pacman extends Character {
         // TODO death animation!
         point.x=1;
         point.y=1;
+    }
+    public void checkFood() {
+        Food food = gameBoard.getFoodMap().get(new Point(point.x,point.y));
+        if(food!=null) {
+            score+=gameBoard.isDoublePoints()?food.score()*2:food.score();
+            gameBoard.getFoodMap().remove(new Point(point.x,point.y));
+            gameBoard.getAllItems().remove(food);
+        }
+    }
+    public void checkMonster() {
+        List<Monster> monsters = new ArrayList<>(gameBoard.getMonsters());
+        for (Monster monster:
+                monsters) {
+            if(monster.getPoint().equals(point)) {
+                if(monster.isVulnerable()&&monster.isAlive()) {
+                    monster.deathProcess();
+                    score+=monster.getScore();
+                } else if(monster.isAlive()&&!monster.isVulnerable()&&!invulnerability){
+                    deathProcess();
+                    return;
+                }
+            }
+        }
+    }
+    public void checkUpgrade() {
+        Object[] upgradesArray = gameBoard.getAllItems()
+                .stream().filter(item->item.getPoint().equals(new Point(point.x, point.y))&&item instanceof Upgrade).toArray();
+        if(upgradesArray.length!=0) {
+            for (Object o : upgradesArray) {
+                ((Upgrade) o).callUpgrade();
+                gameBoard.getAllItems().remove((Upgrade) o);
+            }
+        }
     }
 
     public void setScore(int score) {

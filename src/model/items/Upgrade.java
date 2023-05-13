@@ -37,16 +37,17 @@ public class Upgrade extends Item{
                     e.printStackTrace();
                 }
                 gameBoard.getPacman().setInvulnerability(false);
-            });
-            case DOUBLE_POINTS -> new Thread(()->{
+            }).start();
+            case DOUBLE_POINTS ->
+                    new Thread(()->{
                 gameBoard.setDoublePoints(true);
                 try {
-                    sleep(10000);
+                    sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 gameBoard.setDoublePoints(false);
-            });
+            }).start();
         }
     }
 }
