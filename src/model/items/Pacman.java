@@ -24,6 +24,7 @@ public class Pacman extends Character {
                         monsters) {
                     if (monster.getPoint().equals(point)) {
                         onMonster = monster;
+                        checkMonster();
                     }
                 }
             }
@@ -60,7 +61,6 @@ public class Pacman extends Character {
     public void move() {
         super.move();
         checkFood();
-        checkMonster();
         checkUpgrade();
     }
 

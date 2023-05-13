@@ -170,7 +170,7 @@ public class GameWindow extends JDialog{
         gbc.insets=new Insets(10,10,10,10);
         gbc.fill = GridBagConstraints.VERTICAL;
         JLabel label1 = new JLabel("Game Over");
-        label1.setForeground(Color.YELLOW);
+        label1.setForeground(Color.RED);
         JLabel label2 = new JLabel("Your Score: "+gameController.getScore());
         label2.setForeground(Color.YELLOW);
         JLabel label3 = new JLabel("Enter your name and press \"OK\" to continue");
