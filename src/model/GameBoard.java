@@ -26,7 +26,6 @@ public class GameBoard {
         monsters.add(new Monster("GREEN",this));
         monsters.add(new Monster("RED",this));
         addWallsToModel();
-        checkerboardDeadEnds();
         blocks.remove(new Point(0,3)); // adding tunnels
         blocks.remove(new Point(colNum-1,3));
         blocks.remove(new Point(0,rowNum-4));
@@ -95,46 +94,13 @@ public class GameBoard {
     }
     //creates maze and adds walls to model
     public void addWallsToModel() {
-        MazeGenerator mazeGenerator = new MazeGenerator((colNum)/2, (rowNum)/2);
-        for (int i = 0; i < colNum; i++) { // adding all walls to the model
-            for (int j = 0; j < rowNum; j++) {
-                if(mazeGenerator.getGrid()[i*2][j]=='X') {
-                    Block block = new Block(new Point(i, j), this);
-                    blocks.put(block.getPoint(), block);
-                }
+        MazeGenerator mazeGenerator = new MazeGenerator(colNum, rowNum);// adding all walls to the model
+        mazeGenerator.getCells().forEach(cell->{
+            if(cell.isWall()) {
+                Block block = new Block(new Point(cell.getX(), cell.getY()), this);
+                blocks.put(block.getPoint(), block);
             }
-        }
-    }
-    //finds and removes all dead ends in maze
-    public void checkerboardDeadEnds() {
-        for (int i = 0; i < colNum; i++) {
-            for (int j = 0; j < rowNum; j++) {
-                Point point = new Point(i,j);
-                if (blocks.get(new Point(point.x - 1, point.y)) != null //remove deadend in south dir
-                        && blocks.get(new Point(point.x + 1, point.y)) != null
-                        && blocks.get(new Point(point.x, point.y + 1)) != null
-                        && point.y + 1 != rowNum - 1) {
-                    blocks.remove(new Point(point.x, point.y + 1));
-                }
-                if (blocks.get(new Point(point.x - 1, point.y)) != null //remove deadend in north dir
-                        && blocks.get(new Point(point.x + 1, point.y)) != null
-                        && blocks.get(new Point(point.x, point.y - 1)) != null
-                        && point.y - 1 != 0) {
-                    blocks.remove(new Point(point.x, point.y - 1));
-                }
-                if (blocks.get(new Point(point.x - 1, point.y)) != null //remove deadend in west dir
-                        && blocks.get(new Point(point.x, point.y - 1)) != null
-                        && blocks.get(new Point(point.x, point.y + 1)) != null
-                        && point.x - 1 != 0) {
-                    blocks.remove(new Point(point.x - 1, point.y));
-                }
-                if (blocks.get(new Point(point.x + 1, point.y)) != null //remove deadend in east dir
-                        && blocks.get(new Point(point.x, point.y - 1)) != null
-                        && blocks.get(new Point(point.x, point.y + 1)) != null
-                        && point.x + 1 != colNum - 1) {
-                    blocks.remove(new Point(point.x + 1, point.y));
-                }
-            }
-        }
+        });
     }
 }
+

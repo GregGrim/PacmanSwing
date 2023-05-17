@@ -1,181 +1,195 @@
 package model;
 
 
-import java.util.ArrayList;
-import java.util.Random;
-
+import java.util.*;
+import java.util.List;
 public class MazeGenerator {
-    //MazeGenerator algorithm was taken from internet sources,
-    // then refactored for using in Pacman game and dead ends have been removed
-    private final int dimensionX;
-    private final int dimensionY; // dimension of maze
-    private final int gridDimensionX;
-    private final int gridDimensionY; // dimension of output grid
-    private final char[][] grid; // output grid
-    private Cell[][] cells; // 2d array of Cells
-    private final Random random = new Random(); // The random object
+    private final List<Cell> cells = new ArrayList<>();
+    private List<Cell> toVisit;
+    private Cell currentCell;
 
-    // constructor
-    public MazeGenerator(int xDimension, int yDimension) {
-        dimensionX = xDimension;
-        dimensionY = yDimension;
-        gridDimensionX = xDimension * 4 + 1;
-        gridDimensionY = yDimension * 2 + 1;
-        grid = new char[gridDimensionX][gridDimensionY];
-        init();
-        generateMaze();
-        updateGrid();
-    }
-
-    public char[][] getGrid() {
-        return grid;
-    }
-    public static class Cell {
-        int x, y; // coordinates
-        // cells this cell is connected to
-        ArrayList<MazeGenerator.Cell> neighbors = new ArrayList<>();
-        boolean wall;
-        // if true, has yet to be used in generation
-        boolean open = true;
-        // construct Cell at x, y
-        Cell(int x, int y) {
-            this(x, y, true);
+    public MazeGenerator(int x, int y) {
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cells.add(new Cell(i,j));
+            }
         }
-        // construct Cell at x, y and with whether it isWall
-        Cell(int x, int y, boolean isWall) {
+        currentCell = cells.stream().filter(c -> c.equals(new Cell(1, 1))).toList().get(0);
+
+        toVisit = cells.stream().filter(c-> getCell(c.x+1,c.y)!=null
+                &&(getCell(c.x-1,c.y)!=null)
+                &&getCell(c.x,c.y+1)!=null
+                &&getCell(c.x,c.y-1)!=null
+                &&getCell(c.x+1,c.y).isWall
+                &&getCell(c.x-1,c.y).isWall
+                &&getCell(c.x,c.y+1).isWall
+                &&getCell(c.x,c.y-1).isWall).toList();
+
+        while (!toVisit.stream().allMatch(Cell::isVisited)) {
+            createPath();
+            toVisit = cells.stream().filter(c-> c.x%2!=0&&c.y%2!=0&&!c.visited).toList();
+        }
+        checkerboardDeadEnds(x,y);
+    }
+    private void createPath() {
+        currentCell.setVisited(true);
+        currentCell.setWall(false);
+        List<Cell> neighs = currentCell.getUnvisitedNeighbours();
+        if(neighs.size()>0) {
+            Cell nextCell = neighs.get((int) (Math.random() * neighs.size()));
+            if(currentCell.x!=nextCell.x) {
+                getCell((currentCell.x+nextCell.x)/2, currentCell.y).setWall(false);
+            } else {
+                getCell(currentCell.x, (currentCell.y+nextCell.y)/2).setWall(false);
+            }
+            currentCell = nextCell;
+
+        } else if(getUnvisitedCells().size()>0){
+            currentCell = getVisitedCells().get((int) (Math.random() * getVisitedCells().size()));
+        }
+    }
+    public class Cell {
+        private final int x;
+        private final int y;
+        private boolean isWall;
+        private boolean visited;
+        public Cell(int x, int y) {
             this.x = x;
             this.y = y;
-            this.wall = isWall;
+            this.isWall = true;
+            this.visited=false;
         }
-        // add a neighbor to this cell, and this cell as a neighbor to the other
-        void addNeighbor(MazeGenerator.Cell other) {
-            if (!this.neighbors.contains(other)) { // avoid duplicates
-                this.neighbors.add(other);
-            }
-            if (!other.neighbors.contains(this)) { // avoid duplicates
-                other.neighbors.add(this);
-            }
-        }
-        // used in updateGrid()
-        boolean isCellBelowNeighbor() {
-            return this.neighbors.contains(new Cell(this.x, this.y + 1));
-        }
-        // used in updateGrid()
-        boolean isCellRightNeighbor() {
-            return this.neighbors.contains(new Cell(this.x + 1, this.y));
-        }
-        // useful Cell representation
+
         @Override
-        public String toString() {
-            return String.format("Cell(%s, %s)", x, y);
-        }
-        // useful Cell equivalence
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof Cell otherCell)) return false;
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Cell otherCell)) return false;
             return (this.x == otherCell.x && this.y == otherCell.y);
         }
-        // should be overridden with equals
+
+        public List<Cell> getUnvisitedNeighbours () {
+            List<Cell> neighbours = new ArrayList<>();
+            neighbours.add(getCell(x-2,y));
+            neighbours.add(getCell(x+2,y));
+            neighbours.add(getCell(x,y+2));
+            neighbours.add(getCell(x,y-2));
+            neighbours.removeIf(Objects::isNull);
+            return neighbours.stream().filter(cell->!cell.visited).toList();
+        }
+
+        public void setWall(boolean wall) {
+            isWall = wall;
+        }
+
+        public boolean isWall() {
+            return isWall;
+        }
+
+        public boolean isVisited() {
+            return visited;
+        }
+        public void setVisited(boolean visited) {
+            this.visited = visited;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
         @Override
-        public int hashCode() {
-            // random hash code method designed to be usually unique
-            return this.x + this.y * 256;
+        public String toString() {
+            return "("+x+", "+y+")";
         }
     }
-
-    private void init() {
-        // create cells
-        cells = new Cell[dimensionX][dimensionY];
-        for (int x = 0; x < dimensionX; x++) {
-            for (int y = 0; y < dimensionY; y++) {
-                cells[x][y] = new Cell(x, y, false); // create cell (see Cell constructor)
-            }
-        }
-    }
-    // generate the maze from coordinates x, y
-    private void generateMaze() {
-        generateMaze(getCell(0, 0)); // generate from Cell
-    }
-    private void generateMaze(Cell startAt) {
-        // don't generate from cell not there
-        if (startAt == null) return;
-        startAt.open = false; // indicate cell closed for generation
-        ArrayList<Cell> cells = new ArrayList<>();
-        cells.add(startAt);
-
-        while (!cells.isEmpty()) {
-            Cell cell;
-            //   this is to reduce but not completely eliminate the number
-            //   of long twisting halls with short easy to detect branches
-            //   which results in easy mazes
-            if (random.nextInt(10)==0)
-                cell = cells.remove(random.nextInt(cells.size()));
-            else cell = cells.remove(cells.size() - 1);
-            // for collection
-            ArrayList<Cell> neighbors = new ArrayList<>();
-            // cells that could potentially be neighbors
-            Cell[] potentialNeighbors = new Cell[]{
-                    getCell(cell.x + 1, cell.y),
-                    getCell(cell.x, cell.y + 1),
-                    getCell(cell.x - 1, cell.y),
-                    getCell(cell.x, cell.y - 1)
-            };
-            for (Cell other : potentialNeighbors) {
-                // skip if outside, is a wall or is not opened
-                if (other==null || other.wall || !other.open) continue;
-                neighbors.add(other);
-            }
-            if (neighbors.isEmpty()) continue;
-            // get random cell
-            Cell selected = neighbors.get(random.nextInt(neighbors.size()));
-            // add as neighbor
-            selected.open = false; // indicate cell closed for generation
-            cell.addNeighbor(selected);
-            cells.add(cell);
-            cells.add(selected);
-        }
-    }
-    // used to get a Cell at x, y; returns null out of bounds
     public Cell getCell(int x, int y) {
-        try {
-            return cells[x][y];
-        } catch (ArrayIndexOutOfBoundsException e) { // catch out of bounds
-            return null;
+
+        List<Cell> cell = cells.stream().filter(c->c.x==x&&c.y==y).toList();
+        return cell.size()>0?cell.get(0):null;
+    }
+    public List<Cell> getUnvisitedCells() {
+        return toVisit.stream().filter(c->!c.visited).toList();
+    }
+    public List<Cell> getVisitedCells() {
+        return cells.stream().filter(c->c.visited).toList();
+    }
+    public void draw() {
+        for (int i = 1; i <= cells.size(); i++) {
+            System.out.print(cells.get(i-1).isWall?"X ":"  ");
+            if(i%11==0) {
+                System.out.println();
+            }
         }
     }
-    // draw the maze
-    public void updateGrid() {
-       final char backChar = 'Y', wallChar = 'X', cellChar = ' ';
-        // fill background
-        for (int x = 0; x < gridDimensionX; x ++) {
-            for (int y = 0; y < gridDimensionY; y ++) {
-                grid[x][y] = backChar;
-            }
-        }
-        // build walls
-        for (int x = 0; x < gridDimensionX; x ++) {
-            for (int y = 0; y < gridDimensionY; y ++) {
-                if (x % 4 == 0 || y % 2 == 0)
-                    grid[x][y] = wallChar;
-            }
-        }
-        // make meaningful representation
-        for (int x = 0; x < dimensionX; x++) {
-            for (int y = 0; y < dimensionY; y++) {
-                Cell current = getCell(x, y);
-                int gridX = x * 4 + 2, gridY = y * 2 + 1;
-                grid[gridX][gridY] = cellChar;
-                if (current.isCellBelowNeighbor()) {
-                    grid[gridX][gridY + 1] = cellChar;
-                    grid[gridX + 1][gridY + 1] = backChar;
-                    grid[gridX - 1][gridY + 1] = backChar;
+    public void checkerboardDeadEnds(int x, int y) {    //finds and removes all dead ends in maze
+        for (int i = 1; i < x; i+=2) {
+            for (int j = 1; j < y; j+=2) {
+                if (    getCell(i-1, j).isWall//remove deadend in south dir
+                        && getCell(i+1, j).isWall
+                        && getCell(i, j+1).isWall) {
+                    if(j + 1 != y-1) {
+                        getCell(i,j+1).setWall(false);
+                    } else {
+                        if(i-1!=0) {
+                            getCell(i-1,j).setWall(false);
+                        } else {
+                            getCell(i+1,j).setWall(false);
+                        }
+                    }
+
                 }
-                if (current.isCellRightNeighbor()) {
-                    grid[gridX + 2][gridY] = cellChar;
-                    grid[gridX + 1][gridY] = cellChar;
-                    grid[gridX + 3][gridY] = cellChar;
+                if (    getCell(i-1, j).isWall//remove deadend in north dir
+                        && getCell(i+1, j).isWall
+                        && getCell(i, j-1).isWall) {
+                    if(j - 1 !=0) {
+                        getCell(i,j-1).setWall(false);
+                    } else {
+                        if(i-1!=0) {
+                            getCell(i-1,j).setWall(false);
+                        } else {
+                            getCell(i+1,j).setWall(false);
+                        }
+                    }
+
+                }
+                if (    getCell(i-1, j).isWall//remove deadend in west dir
+                        && getCell(i, j-1).isWall
+                        && getCell(i, j+1).isWall) {
+                    if(i - 1 != 0) {
+                        getCell(i-1,j).setWall(false);
+                    } else {
+                        if(j-1!=0) {
+                            getCell(i,j-1).setWall(false);
+                        } else {
+                            getCell(i,j+1).setWall(false);
+                        }
+                    }
+
+                }
+                if (getCell(i, j-1).isWall//remove deadend in east dir
+                        && getCell(i+1, j).isWall
+                        && getCell(i, j+1).isWall) {
+                    if(i + 1 != x-1) {
+                        getCell(i+1,j).setWall(false);
+                    } else {
+                        if(j-1!=0) {
+                            getCell(i,j-1).setWall(false);
+                        } else {
+                            getCell(i,j+1).setWall(false);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    public List<Cell> getCells() {
+        return cells;
+    }
+        public static void main(String[] args) {
+        MazeGenerator mazeGenerator = new MazeGenerator(11,11);
+        mazeGenerator.draw();
     }
 }

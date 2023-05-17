@@ -10,17 +10,19 @@ import static java.lang.Thread.sleep;
 public class GameTable extends JTable {
     private GameController gameController;
     private boolean isRunning = true;
+
     private GameWindow gameWindow;
     private final Thread painter = new Thread(() -> {
         try {
             while(isRunning) {
                 repaint();
+                gameWindow.updateStats();
                 if(gameController.boardOver()) {
-                    gameWindow.restartGame();
+                    SwingUtilities.invokeLater(()->gameWindow.restartGame());
                     sleep(1500);
                 }
                 if(gameController.gameOver()) {
-                    gameWindow.showGameOver();
+                    SwingUtilities.invokeLater(()->gameWindow.showGameOver());
                 }
                 sleep(20);
             }
@@ -28,8 +30,9 @@ public class GameTable extends JTable {
             e.printStackTrace();
         }
     });
-    public GameTable (GameController gameController) {
+    public GameTable (GameController gameController, GameWindow gameWindow) {
         super();
+        this.gameWindow=gameWindow;
         this.gameController=gameController;
         setModel(gameController.getGameTableModel());
         setBackground(Color.BLACK);
@@ -38,10 +41,7 @@ public class GameTable extends JTable {
         setIntercellSpacing(new Dimension(0,0));
         setFocusable(false);
         addKeyListener(gameController.getKeyListener());
-    }
-    public Runnable getPainter(GameWindow gameWindow) {
-        this.gameWindow=gameWindow;
-        return painter;
+        painter.start();
     }
     public void stop () {
         isRunning=false;
@@ -58,5 +58,10 @@ public class GameTable extends JTable {
             getColumnModel().getColumn(i).setMaxWidth(newCellSize);
             getColumnModel().getColumn(i).setMinWidth(newCellSize);
         }
+    }
+
+    @Override
+    public void repaint(Rectangle r) {
+        super.repaint(r);
     }
 }
