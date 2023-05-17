@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="SwingGameProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SwingGameProject_jar</output-path>
+    <root id="archive" name="SwingGameProject.jar">
+      <element id="module-output" name="SwingGameProject" />
+    </root>
+  </artifact>
+</component>

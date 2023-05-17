@@ -170,4 +170,7 @@ public class GameController {
       return gameBoard.getPacman().getLives()<=0;
    }
 
+   public GameBoard getGameBoard() {
+      return gameBoard;
+   }
 }

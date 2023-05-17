@@ -9,8 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 
@@ -32,10 +30,7 @@ public class GameWindow extends JDialog{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            timeLabel.setText("Time: " + gameController.getTime());
-            scoreLabel.setText("Score: " + gameController.getScore());
-            livesLabel.setText("Lives: " + gameController.getLives());
-            infoPanel.repaint();
+            updateStats();
         }
     });
     // scalability listener
@@ -71,8 +66,6 @@ public class GameWindow extends JDialog{
         } else JOptionPane.showMessageDialog(this, "Please enter your name :)",
                 "Error", JOptionPane.ERROR_MESSAGE);
     };
-    // executor for repainting in gui
-    private final ExecutorService exec = Executors.newCachedThreadPool();
     // frame of main game window
     public GameWindow(JFrame parentFrame,int rowNum,int colNum) {
         super(parentFrame, "Game", true);
@@ -115,12 +108,12 @@ public class GameWindow extends JDialog{
     }
     private void stop() {
         isRunning=false;
+        gameTable.stop();
         try{
             panelRepainter.join();
         } catch (InterruptedException e){
             e.printStackTrace();
         }
-        gameTable.stop();
         gameController.stopGame();
         remove(gameTable);
         remove(infoPanel);
@@ -131,7 +124,6 @@ public class GameWindow extends JDialog{
     }
     // creates panel and game table for game
     public void createGameFieldComponents() {
-        gameTable =new GameTable(gameController);
         scoreLabel=new JLabel("Score: "+gameController.getScore());
         scoreLabel.setForeground(Color.YELLOW);
 
@@ -158,11 +150,10 @@ public class GameWindow extends JDialog{
         cellPanel.setBackground(Color.BLACK);
         infoPanel.add(cellPanel);
         add(infoPanel, BorderLayout.NORTH);
+        gameTable =new GameTable(gameController,this);
         add(gameTable);
         pack();
         isRunning=true;
-        exec.execute(panelRepainter);
-        exec.execute(gameTable.getPainter(this));
         requestFocus();
         addKeyListener(gameController.getKeyListener());
         setFocusable(true);
@@ -210,6 +201,12 @@ public class GameWindow extends JDialog{
         add(button,gbc);
         pack();
         setVisible(true);
+    }
+    public void updateStats() {
+        timeLabel.setText("Time: " + gameController.getTime());
+        scoreLabel.setText("Score: " + gameController.getScore());
+        livesLabel.setText("Lives: " + gameController.getLives());
+        infoPanel.repaint();
     }
 }
 
