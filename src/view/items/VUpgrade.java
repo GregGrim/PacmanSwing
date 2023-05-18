@@ -28,7 +28,7 @@ public class VUpgrade extends VItem {
             }
             case TELEPORT -> {
                 g.setColor(new Color(100,0,200));
-                g.drawString("TP",x,y);
+                g.drawString("TP",x/2,2*y);
             }
             case INVULNERABILITY -> {
                 g.setColor(Color.MAGENTA);
@@ -36,7 +36,7 @@ public class VUpgrade extends VItem {
             }
             case DOUBLE_POINTS -> {
                 g.setColor(new Color(255,140,0));
-                g.drawString("DP",x,y);
+                g.drawString("DP",x/2,2*y);
             }
         }
     }

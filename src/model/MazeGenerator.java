@@ -115,14 +115,7 @@ public class MazeGenerator {
     public List<Cell> getVisitedCells() {
         return cells.stream().filter(c->c.visited).toList();
     }
-    public void draw() {
-        for (int i = 1; i <= cells.size(); i++) {
-            System.out.print(cells.get(i-1).isWall?"X ":"  ");
-            if(i%11==0) {
-                System.out.println();
-            }
-        }
-    }
+
     public void checkerboardDeadEnds(int x, int y) {    //finds and removes all dead ends in maze
         for (int i = 1; i < x; i+=2) {
             for (int j = 1; j < y; j+=2) {
@@ -185,6 +178,14 @@ public class MazeGenerator {
         }
     }
 
+    public void draw() {
+        for (int i = 1; i <= cells.size(); i++) {
+            System.out.print(cells.get(i-1).isWall?"X ":"  ");
+            if(i%11==0) {
+                System.out.println();
+            }
+        }
+    }
     public List<Cell> getCells() {
         return cells;
     }
